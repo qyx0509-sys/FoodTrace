@@ -1,0 +1,190 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+
+  @@map("user_status")
+}
+
+enum StoreSource {
+  TENCENT_POI
+  MANUAL
+
+  @@map("store_source")
+}
+
+enum CoordinateType {
+  GCJ02
+
+  @@map("coordinate_type")
+}
+
+enum RecordStatus {
+  WANT_TO_GO
+  VISITED
+  BLACKLISTED
+
+  @@map("record_status")
+}
+
+enum DishType {
+  RECOMMENDED
+  AVOIDED
+
+  @@map("dish_type")
+}
+
+model User {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nickname        String?       @db.VarChar(80)
+  avatarObjectKey String?       @map("avatar_object_key") @db.VarChar(512)
+  timezone        String        @default("Asia/Shanghai") @db.VarChar(64)
+  locale          String        @default("zh-CN") @db.VarChar(16)
+  status          UserStatus    @default(ACTIVE)
+  lastLoginAt     DateTime?     @map("last_login_at") @db.Timestamptz(3)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  stores          Store[]
+  foodRecords     FoodRecord[]
+  tags            Tag[]
+  recordTags      RecordTag[]
+  recordImages    RecordImage[]
+  dishRecords     DishRecord[]
+
+  @@index([status, createdAt], map: "users_status_created_at_idx")
+  @@map("users")
+}
+
+model Store {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String         @map("user_id") @db.Uuid
+  source         StoreSource
+  mapPoiId       String?        @map("map_poi_id") @db.VarChar(128)
+  name           String         @db.VarChar(100)
+  category       String?        @db.VarChar(100)
+  phone          String?        @db.VarChar(50)
+  address        String?        @db.VarChar(300)
+  province       String?        @db.VarChar(60)
+  city           String?        @db.VarChar(60)
+  district       String?        @db.VarChar(60)
+  latitude       Decimal        @db.Decimal(10, 7)
+  longitude      Decimal        @db.Decimal(10, 7)
+  coordinateType CoordinateType @default(GCJ02) @map("coordinate_type")
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodRecord     FoodRecord?
+
+  @@unique([userId, id], map: "stores_user_id_id_key")
+  @@unique([userId, mapPoiId], map: "stores_user_id_map_poi_id_key")
+  @@index([userId, city], map: "stores_user_id_city_idx")
+  @@index([userId, latitude], map: "stores_user_id_latitude_idx")
+  @@index([userId, longitude], map: "stores_user_id_longitude_idx")
+  @@map("stores")
+}
+
+model FoodRecord {
+  id                String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String        @map("user_id") @db.Uuid
+  storeId           String        @map("store_id") @db.Uuid
+  status            RecordStatus
+  overallRating     Decimal?      @map("overall_rating") @db.Decimal(2, 1)
+  tasteRating       Decimal?      @map("taste_rating") @db.Decimal(2, 1)
+  environmentRating Decimal?      @map("environment_rating") @db.Decimal(2, 1)
+  serviceRating     Decimal?      @map("service_rating") @db.Decimal(2, 1)
+  perCapitaPrice    Decimal?      @map("per_capita_price") @db.Decimal(10, 2)
+  currency          String        @default("CNY") @db.Char(3)
+  visitedAt         DateTime?     @map("visited_at") @db.Date
+  notes             String?       @db.Text
+  version           Int           @default(1)
+  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store             Store         @relation(fields: [userId, storeId], references: [userId, id], onDelete: Cascade)
+  recordTags        RecordTag[]
+  images            RecordImage[]
+  dishes            DishRecord[]
+
+  @@unique([userId, id], map: "food_records_user_id_id_key")
+  @@unique([userId, storeId], map: "food_records_user_id_store_id_key")
+  @@index([userId, status, updatedAt(sort: Desc), id(sort: Desc)], map: "food_records_user_status_updated_id_idx")
+  @@index([userId, visitedAt(sort: Desc)], map: "food_records_user_visited_at_idx")
+  @@index([userId, overallRating(sort: Desc)], map: "food_records_user_overall_rating_idx")
+  @@map("food_records")
+}
+
+model Tag {
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String      @map("user_id") @db.Uuid
+  name           String      @db.VarChar(20)
+  normalizedName String      @map("normalized_name") @db.VarChar(20)
+  color          String?     @db.VarChar(7)
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recordTags     RecordTag[]
+
+  @@unique([userId, id], map: "tags_user_id_id_key")
+  @@unique([userId, normalizedName], map: "tags_user_id_normalized_name_key")
+  @@map("tags")
+}
+
+model RecordTag {
+  userId    String     @map("user_id") @db.Uuid
+  recordId  String     @map("record_id") @db.Uuid
+  tagId     String     @map("tag_id") @db.Uuid
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  record    FoodRecord @relation(fields: [userId, recordId], references: [userId, id], onDelete: Cascade)
+  tag       Tag        @relation(fields: [userId, tagId], references: [userId, id], onDelete: Cascade)
+
+  @@id([recordId, tagId], map: "food_record_tags_pkey")
+  @@index([userId, recordId], map: "food_record_tags_user_id_record_id_idx")
+  @@index([userId, tagId, recordId], map: "food_record_tags_user_id_tag_id_record_id_idx")
+  @@map("food_record_tags")
+}
+
+model RecordImage {
+  id         String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String     @map("user_id") @db.Uuid
+  recordId   String     @map("record_id") @db.Uuid
+  objectKey  String     @unique(map: "record_images_object_key_key") @map("object_key") @db.VarChar(512)
+  mimeType   String     @map("mime_type") @db.VarChar(64)
+  sizeBytes  BigInt     @map("size_bytes")
+  width      Int?
+  height     Int?
+  checksum   String?    @db.VarChar(128)
+  sortOrder  Int        @map("sort_order") @db.SmallInt
+  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodRecord FoodRecord @relation(fields: [userId, recordId], references: [userId, id], onDelete: Cascade)
+
+  @@unique([recordId, sortOrder], map: "record_images_record_id_sort_order_key")
+  @@index([userId, recordId], map: "record_images_user_id_record_id_idx")
+  @@map("record_images")
+}
+
+model DishRecord {
+  id             String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String     @map("user_id") @db.Uuid
+  recordId       String     @map("record_id") @db.Uuid
+  type           DishType
+  name           String     @db.VarChar(50)
+  normalizedName String     @map("normalized_name") @db.VarChar(50)
+  sortOrder      Int        @map("sort_order") @db.SmallInt
+  createdAt      DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodRecord     FoodRecord @relation(fields: [userId, recordId], references: [userId, id], onDelete: Cascade)
+
+  @@unique([userId, recordId, type, normalizedName], map: "dish_items_user_record_type_name_key")
+  @@map("dish_items")
+}

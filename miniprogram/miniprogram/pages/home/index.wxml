@@ -1,0 +1,5 @@
+<view class="page">
+  <view class="hero" role="heading" aria-level="1">{{title}}</view>
+  <view class="description">{{description}}</view>
+  <view class="stage">{{stage}}</view>
+</view>

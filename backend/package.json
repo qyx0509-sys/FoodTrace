@@ -1,0 +1,53 @@
+{
+  "name": "@foodtrace/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "食迹 NestJS API",
+  "scripts": {
+    "build": "nest build",
+    "lint": "eslint src test prisma.config.ts prisma/**/*.ts",
+    "prisma:format": "prisma format",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:test": "tsx prisma/migration-test.ts",
+    "prisma:seed": "prisma db seed",
+    "prisma:validate": "prisma validate",
+    "start": "node dist/main.js",
+    "start:dev": "nest start --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.28",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.1.28",
+    "@nestjs/platform-express": "^11.1.28",
+    "@nestjs/swagger": "^11.4.5",
+    "@prisma/adapter-pg": "7.8.0",
+    "@prisma/client": "^7.8.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "dotenv": "^17.4.2",
+    "pg": "8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@nestjs/cli": "^11.0.24",
+    "@nestjs/testing": "^11.1.28",
+    "@prisma/dev": "^0.24.14",
+    "@types/node": "^26.1.1",
+    "@types/pg": "8.15.5",
+    "@types/supertest": "^7.2.0",
+    "eslint": "^10.7.0",
+    "prisma": "^7.8.0",
+    "supertest": "^7.2.2",
+    "tsx": "4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.63.0",
+    "vitest": "^4.1.10"
+  }
+}

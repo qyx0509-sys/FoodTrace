@@ -1,0 +1,13 @@
+packages:
+  - backend
+  - miniprogram
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - esbuild
+
+allowBuilds:
+  '@prisma/engines': true
+  '@scarf/scarf': false
+  esbuild: true
+  prisma: true

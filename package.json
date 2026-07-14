@@ -1,0 +1,33 @@
+{
+  "name": "foodtrace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "食迹私人美食记录产品",
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "backend:dev": "pnpm --filter @foodtrace/api start:dev",
+    "backend:start": "pnpm --filter @foodtrace/api start",
+    "format": "prettier --write \"**/*.{json,md,mjs,ts,yaml,yml}\"",
+    "format:check": "prettier --check \"**/*.{json,md,mjs,ts,yaml,yml}\"",
+    "lint": "pnpm --recursive --if-present lint",
+    "typecheck": "pnpm --recursive --if-present typecheck",
+    "test": "pnpm --recursive --if-present test",
+    "build": "pnpm --recursive --if-present build",
+    "prisma:format": "pnpm --filter @foodtrace/api prisma:format",
+    "prisma:validate": "pnpm --filter @foodtrace/api prisma:validate",
+    "prisma:generate": "pnpm --filter @foodtrace/api prisma:generate",
+    "prisma:migrate:dev": "pnpm --filter @foodtrace/api prisma:migrate:dev",
+    "prisma:migrate:deploy": "pnpm --filter @foodtrace/api prisma:migrate:deploy",
+    "prisma:migrate:test": "pnpm --filter @foodtrace/api prisma:migrate:test",
+    "prisma:seed": "pnpm --filter @foodtrace/api prisma:seed",
+    "postgres:up": "docker compose --env-file .env -f infra/docker/docker-compose.dev.yml up -d postgres",
+    "postgres:down": "docker compose --env-file .env -f infra/docker/docker-compose.dev.yml down",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm prisma:validate && pnpm prisma:migrate:test && pnpm build"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.5"
+  }
+}

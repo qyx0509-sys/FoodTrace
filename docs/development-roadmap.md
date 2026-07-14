@@ -43,82 +43,81 @@ Flutter App ─────┘                         │
 
 ```text
 foodtrace/
-├── apps/
-│   ├── api/                         # NestJS 后端
-│   │   ├── prisma/
-│   │   │   ├── migrations/
-│   │   │   ├── schema.prisma
-│   │   │   └── seed.ts
-│   │   ├── src/
-│   │   │   ├── common/              # guard、filter、pipe、interceptor、错误码
-│   │   │   ├── config/              # 环境变量校验与配置映射
-│   │   │   ├── modules/
-│   │   │   │   ├── auth/
-│   │   │   │   ├── users/
-│   │   │   │   ├── records/
-│   │   │   │   ├── tags/
-│   │   │   │   ├── pois/
-│   │   │   │   ├── maps/
-│   │   │   │   ├── media/
-│   │   │   │   ├── statistics/
-│   │   │   │   └── health/
-│   │   │   ├── app.module.ts
-│   │   │   └── main.ts
-│   │   ├── test/                    # e2e、fixtures、跨用户隔离测试
-│   │   ├── Dockerfile
-│   │   └── package.json
-│   ├── miniprogram/                 # 微信原生小程序 + TypeScript
-│   │   ├── miniprogram/
-│   │   │   ├── api/                 # 统一请求层与 endpoint 封装
-│   │   │   ├── components/          # 自定义业务组件
-│   │   │   ├── pages/
-│   │   │   │   ├── login/
-│   │   │   │   ├── home/
-│   │   │   │   ├── records/
-│   │   │   │   ├── record-form/
-│   │   │   │   ├── record-detail/
-│   │   │   │   ├── store-search/
-│   │   │   │   ├── store-manual/
-│   │   │   │   ├── map/
-│   │   │   │   ├── statistics/
-│   │   │   │   ├── tags/
-│   │   │   │   └── settings/
-│   │   │   ├── services/            # auth、cache、location、upload
-│   │   │   ├── store/               # 轻量全局会话与查询状态
-│   │   │   ├── types/
-│   │   │   ├── utils/
-│   │   │   ├── app.json
-│   │   │   └── app.ts
-│   │   ├── tests/
-│   │   ├── project.config.example.json
-│   │   └── package.json
-│   └── mobile/                      # Flutter Android/iOS App
-│       ├── android/
-│       ├── ios/
-│       ├── lib/
-│       │   ├── app/
-│       │   │   ├── router/
-│       │   │   └── theme/
-│       │   ├── core/
-│       │   │   ├── cache/
-│       │   │   ├── config/
-│       │   │   ├── errors/
-│       │   │   ├── network/         # Dio 与 token refresh
-│       │   │   ├── security/        # Keychain / Keystore
-│       │   │   └── widgets/
-│       │   └── features/
-│       │       ├── auth/
-│       │       ├── home/
-│       │       ├── records/
-│       │       ├── stores/
-│       │       ├── map/
-│       │       ├── media/
-│       │       ├── statistics/
-│       │       ├── tags/
-│       │       └── settings/
-│       ├── test/
-│       ├── integration_test/
-│       └── pubspec.yaml
+├── backend/                         # NestJS + TypeScript + Prisma 后端
+│   ├── prisma/
+│   │   ├── migrations/
+│   │   ├── schema.prisma
+│   │   └── seed.ts
+│   ├── src/
+│   │   ├── common/                  # guard、filter、pipe、interceptor、错误码
+│   │   ├── config/                  # 环境变量校验与配置映射
+│   │   ├── modules/
+│   │   │   ├── auth/
+│   │   │   ├── users/
+│   │   │   ├── records/
+│   │   │   ├── tags/
+│   │   │   ├── pois/
+│   │   │   ├── maps/
+│   │   │   ├── media/
+│   │   │   ├── statistics/
+│   │   │   └── health/
+│   │   ├── app.module.ts
+│   │   └── main.ts
+│   ├── test/                        # e2e、fixtures、跨用户隔离测试
+│   ├── Dockerfile
+│   └── package.json
+├── miniprogram/                     # 微信原生小程序 + TypeScript
+│   ├── miniprogram/
+│   │   ├── api/                     # 统一请求层与 endpoint 封装
+│   │   ├── components/              # 自定义业务组件
+│   │   ├── pages/
+│   │   │   ├── login/
+│   │   │   ├── home/
+│   │   │   ├── records/
+│   │   │   ├── record-form/
+│   │   │   ├── record-detail/
+│   │   │   ├── store-search/
+│   │   │   ├── store-manual/
+│   │   │   ├── map/
+│   │   │   ├── statistics/
+│   │   │   ├── tags/
+│   │   │   └── settings/
+│   │   ├── services/                # auth、cache、location、upload
+│   │   ├── store/                   # 轻量全局会话与查询状态
+│   │   ├── types/
+│   │   ├── utils/
+│   │   ├── app.json
+│   │   └── app.ts
+│   ├── tests/
+│   ├── project.config.example.json
+│   └── package.json
+├── flutter_app/                     # Flutter Android/iOS App
+│   ├── android/
+│   ├── ios/
+│   ├── lib/
+│   │   ├── app/
+│   │   │   ├── router/
+│   │   │   └── theme/
+│   │   ├── core/
+│   │   │   ├── cache/
+│   │   │   ├── config/
+│   │   │   ├── errors/
+│   │   │   ├── network/             # Dio 与 token refresh
+│   │   │   ├── security/            # Keychain / Keystore
+│   │   │   └── widgets/
+│   │   └── features/
+│   │       ├── auth/
+│   │       ├── home/
+│   │       ├── records/
+│   │       ├── stores/
+│   │       ├── map/
+│   │       ├── media/
+│   │       ├── statistics/
+│   │       ├── tags/
+│   │       └── settings/
+│   ├── test/
+│   ├── integration_test/
+│   └── pubspec.yaml
 ├── packages/
 │   └── api-contract/
 │       ├── openapi.json              # 从 Nest Swagger 导出的版本化契约
@@ -145,7 +144,7 @@ foodtrace/
 
 ### 3.1 目录约束
 
-- `apps/api` 与 `apps/miniprogram` 进入 pnpm workspace；Flutter 保留自己的工具链和锁文件。
+- `backend` 与 `miniprogram` 进入 pnpm workspace；`flutter_app` 保留自己的工具链和锁文件。
 - 业务模块按领域组织，不建立按 Controller/Service 类型横切的巨大目录。
 - `generated/` 只能由固定命令重建，并在 CI 验证是否与 `openapi.json` 一致。
 - 平台真实配置文件、签名材料、`.env`、service account 和 keystore 不提交仓库。
@@ -189,9 +188,9 @@ foodtrace/
 **主要文件变化**
 
 - 根 workspace、锁文件、`.gitignore`、`.env.example`、README；
-- `apps/api` 最小 NestJS、Swagger 和配置模块；
-- `apps/miniprogram` 最小可编译页面与统一请求层接口；
-- `apps/mobile` 最小 Riverpod/Dio 工程；
+- `backend` 最小 NestJS、Swagger、Prisma 和配置模块；
+- `miniprogram` 最小可编译页面与统一请求层接口；
+- `flutter_app` 最小 Riverpod/Dio 工程；
 - `infra/docker/docker-compose.dev.yml`。
 
 **数据变化**
@@ -457,10 +456,10 @@ APP_ENV
 ```text
 .env
 .env.*.local
-apps/miniprogram/project.config.json
-apps/mobile/android/key.properties
-apps/mobile/android/*.jks
-apps/mobile/ios/Runner/*.entitlements.local
+miniprogram/project.config.json
+flutter_app/android/key.properties
+flutter_app/android/*.jks
+flutter_app/ios/Runner/*.entitlements.local
 ```
 
 实际 Flutter/iOS 文件名以初始化生成结果为准，先审核 `.gitignore` 再放入任何签名材料。

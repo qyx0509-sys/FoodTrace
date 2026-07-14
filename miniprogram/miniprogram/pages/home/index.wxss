@@ -1,0 +1,28 @@
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 160rpx 48rpx 64rpx;
+}
+
+.hero {
+  font-size: 72rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+}
+
+.description {
+  margin-top: 24rpx;
+  color: #5d5d55;
+  font-size: 32rpx;
+}
+
+.stage {
+  margin-top: 80rpx;
+  padding: 32rpx;
+  border: 1rpx solid #e4e4de;
+  border-radius: 24rpx;
+  background: #ffffff;
+  color: #77776f;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
