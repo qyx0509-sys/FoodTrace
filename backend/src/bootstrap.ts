@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import { ApiExceptionFilter } from './common/http/api-exception.filter';
 import { ApiResponseInterceptor } from './common/http/api-response.interceptor';
 import { RequestTimeoutInterceptor } from './common/http/request-timeout.interceptor';
+import { RequestLoggingInterceptor } from './common/http/request-logging.interceptor';
 
 export function configureApplication(app: INestApplication): void {
   const config = app.get(ConfigService);
@@ -47,7 +48,11 @@ export function configureApplication(app: INestApplication): void {
     }),
   );
   app.useGlobalFilters(new ApiExceptionFilter(config));
-  app.useGlobalInterceptors(new RequestTimeoutInterceptor(), new ApiResponseInterceptor());
+  app.useGlobalInterceptors(
+    new RequestLoggingInterceptor(),
+    new RequestTimeoutInterceptor(),
+    new ApiResponseInterceptor(),
+  );
 
   if (config.getOrThrow<boolean>('SWAGGER_ENABLED')) {
     const swaggerConfig = new DocumentBuilder()

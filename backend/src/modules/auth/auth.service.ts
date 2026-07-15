@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'node:crypto';
 
 import { PrismaService } from '../../database/prisma.service';
+import type { User } from '../../generated/prisma/client';
 import type { AuthenticatedUser, WeChatIdentity } from './auth.types';
 import type { RefreshTokenDto, WeChatMiniLoginDto } from './dto/auth.dto';
 import { JwtTokenService } from './jwt-token.service';
@@ -105,7 +106,7 @@ export class AuthService {
     });
   }
 
-  private async resolveMiniProgramUser(identity: WeChatIdentity) {
+  private async resolveMiniProgramUser(identity: WeChatIdentity): Promise<User> {
     const appId = this.config.getOrThrow<string>('WECHAT_MINI_APP_ID');
     const existing = await this.prisma.authIdentity.findUnique({
       include: { user: true },
@@ -157,7 +158,12 @@ export class AuthService {
   }
 
   private async createSession(
-    user: { avatarObjectKey: string | null; id: string; nickname: string | null; tokenVersion: number },
+    user: {
+      avatarObjectKey: string | null;
+      id: string;
+      nickname: string | null;
+      tokenVersion: number;
+    },
     deviceId: string,
     deviceName: string,
   ): Promise<SessionResponse> {
@@ -179,7 +185,12 @@ export class AuthService {
   }
 
   private formatSession(
-    user: { avatarObjectKey: string | null; id: string; nickname: string | null; tokenVersion: number },
+    user: {
+      avatarObjectKey: string | null;
+      id: string;
+      nickname: string | null;
+      tokenVersion: number;
+    },
     sessionId: string,
     refreshToken: string,
   ): SessionResponse {

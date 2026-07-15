@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { Prisma, type FoodRecord } from '../../generated/prisma/client';
+import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import type { CreateFoodRecordDto, UpdateFoodRecordDto } from './dto/record.dto';
 import type { RecordListQueryDto } from './dto/record-query.dto';
@@ -60,31 +60,74 @@ function validateRatings(dto: Partial<CreateFoodRecordDto>): void {
     dto.valueRating,
   ];
   if (values.some((value) => value !== undefined && !Number.isInteger(value * 2))) {
-    throw new BadRequestException({ code: 'RATING_STEP_INVALID', message: '评分必须以 0.5 为步长' });
+    throw new BadRequestException({
+      code: 'RATING_STEP_INVALID',
+      message: '评分必须以 0.5 为步长',
+    });
   }
 }
 
-function serializeRecord(record: RecordWithRelations) {
+function serializeRecord(record: RecordWithRelations): Record<string, unknown> {
   return {
-    ...record,
-    environmentRating: record.environmentRating?.toString() ?? null,
-    images: record.images.map((image) => ({
-      ...image,
-      sizeBytes: image.sizeBytes.toString(),
+    clientRequestId: record.clientRequestId,
+    companionCount: record.companionCount,
+    companions: record.companions,
+    createdAt: record.createdAt,
+    currency: record.currency,
+    dishes: record.dishes.map((dish) => ({
+      id: dish.id,
+      name: dish.name,
+      sortOrder: dish.sortOrder,
+      type: dish.type,
     })),
+    environmentRating: record.environmentRating?.toString() ?? null,
+    id: record.id,
+    images: record.images.map((image) => ({
+      createdAt: image.createdAt,
+      height: image.height,
+      id: image.id,
+      mimeType: image.mimeType,
+      sizeBytes: image.sizeBytes.toString(),
+      sortOrder: image.sortOrder,
+      width: image.width,
+    })),
+    isDraft: record.isDraft,
+    isFavorite: record.isFavorite,
+    isRecommended: record.isRecommended,
+    mealAt: record.mealAt,
+    notes: record.notes,
     overallRating: record.overallRating?.toString() ?? null,
     perCapitaPrice: record.perCapitaPrice?.toString() ?? null,
-    recordTags: undefined,
     serviceRating: record.serviceRating?.toString() ?? null,
+    status: record.status,
     store: {
-      ...record.store,
+      address: record.store.address,
+      category: record.store.category,
+      city: record.store.city,
+      coordinateType: record.store.coordinateType,
+      district: record.store.district,
+      id: record.store.id,
       latitude: record.store.latitude.toString(),
       longitude: record.store.longitude.toString(),
+      mapPoiId: record.store.mapPoiId,
+      name: record.store.name,
+      phone: record.store.phone,
+      province: record.store.province,
+      source: record.store.source,
     },
-    tags: record.recordTags.map(({ tag }) => tag),
+    summary: record.summary,
+    tags: record.recordTags.map(({ tag }) => ({
+      color: tag.color,
+      id: tag.id,
+      name: tag.name,
+    })),
     tasteRating: record.tasteRating?.toString() ?? null,
     totalPrice: record.totalPrice?.toString() ?? null,
+    updatedAt: record.updatedAt,
     valueRating: record.valueRating?.toString() ?? null,
+    version: record.version,
+    visitedAt: record.visitedAt,
+    wouldRevisit: record.wouldRevisit,
   };
 }
 
@@ -92,7 +135,7 @@ function serializeRecord(record: RecordWithRelations) {
 export class RecordsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userId: string, dto: CreateFoodRecordDto) {
+  async create(userId: string, dto: CreateFoodRecordDto): Promise<Record<string, unknown>> {
     validateRatings(dto);
     const existingRequest = await this.prisma.foodRecord.findUnique({
       include: recordInclude,
@@ -138,12 +181,24 @@ export class RecordsService {
               where: { id: existingStoreRecord.id },
             });
       await this.replaceTagsAndDishes(transaction, userId, saved.id, dto.tags, dto.dishes);
-      return transaction.foodRecord.findUniqueOrThrow({ include: recordInclude, where: { id: saved.id } });
+      return transaction.foodRecord.findUniqueOrThrow({
+        include: recordInclude,
+        where: { id: saved.id },
+      });
     });
     return serializeRecord(record);
   }
 
-  async list(userId: string, query: RecordListQueryDto) {
+  async list(
+    userId: string,
+    query: RecordListQueryDto,
+  ): Promise<{
+    hasMore: boolean;
+    items: Array<Record<string, unknown>>;
+    page: number;
+    pageSize: number;
+    total: number;
+  }> {
     const search = query.query?.trim();
     const where: Prisma.FoodRecordWhereInput = {
       deletedAt: null,
@@ -159,7 +214,9 @@ export class RecordsService {
               { notes: { contains: search, mode: 'insensitive' } },
               { summary: { contains: search, mode: 'insensitive' } },
               { dishes: { some: { name: { contains: search, mode: 'insensitive' } } } },
-              { recordTags: { some: { tag: { name: { contains: search, mode: 'insensitive' } } } } },
+              {
+                recordTags: { some: { tag: { name: { contains: search, mode: 'insensitive' } } } },
+              },
             ],
           }
         : {}),
@@ -183,7 +240,7 @@ export class RecordsService {
     };
   }
 
-  async getOne(userId: string, id: string) {
+  async getOne(userId: string, id: string): Promise<Record<string, unknown>> {
     const record = await this.prisma.foodRecord.findFirst({
       include: recordInclude,
       where: { deletedAt: null, id, userId },
@@ -194,7 +251,11 @@ export class RecordsService {
     return serializeRecord(record);
   }
 
-  async update(userId: string, id: string, dto: UpdateFoodRecordDto) {
+  async update(
+    userId: string,
+    id: string,
+    dto: UpdateFoodRecordDto,
+  ): Promise<Record<string, unknown>> {
     validateRatings(dto);
     const current = await this.prisma.foodRecord.findFirst({
       include: recordInclude,
@@ -223,7 +284,10 @@ export class RecordsService {
       return transaction.foodRecord.findUniqueOrThrow({ include: recordInclude, where: { id } });
     });
     if (record === null) {
-      throw new ConflictException({ code: 'RECORD_VERSION_CONFLICT', message: '记录已在其他设备更新，请刷新后重试' });
+      throw new ConflictException({
+        code: 'RECORD_VERSION_CONFLICT',
+        message: '记录已在其他设备更新，请刷新后重试',
+      });
     }
     return serializeRecord(record);
   }

@@ -41,20 +41,35 @@ export class WeChatAuthClient {
         signal: AbortSignal.timeout(8_000),
       });
     } catch {
-      throw new BadGatewayException({ code: 'WECHAT_UNAVAILABLE', message: '微信登录服务暂时不可用' });
+      throw new BadGatewayException({
+        code: 'WECHAT_UNAVAILABLE',
+        message: '微信登录服务暂时不可用',
+      });
     }
     if (!response.ok) {
-      throw new BadGatewayException({ code: 'WECHAT_UNAVAILABLE', message: '微信登录服务响应异常' });
+      throw new BadGatewayException({
+        code: 'WECHAT_UNAVAILABLE',
+        message: '微信登录服务响应异常',
+      });
     }
     const value = (await response.json()) as WeChatSessionResponse;
     if (typeof value.errcode === 'number') {
       if (value.errcode === 40029 || value.errcode === 40163) {
-        throw new UnauthorizedException({ code: 'WECHAT_CODE_INVALID', message: '微信登录凭证已失效' });
+        throw new UnauthorizedException({
+          code: 'WECHAT_CODE_INVALID',
+          message: '微信登录凭证已失效',
+        });
       }
-      throw new BadGatewayException({ code: 'WECHAT_LOGIN_FAILED', message: '微信登录失败，请稍后重试' });
+      throw new BadGatewayException({
+        code: 'WECHAT_LOGIN_FAILED',
+        message: '微信登录失败，请稍后重试',
+      });
     }
     if (typeof value.openid !== 'string' || value.openid.length === 0) {
-      throw new BadGatewayException({ code: 'WECHAT_RESPONSE_INVALID', message: '微信登录响应不完整' });
+      throw new BadGatewayException({
+        code: 'WECHAT_RESPONSE_INVALID',
+        message: '微信登录响应不完整',
+      });
     }
     return {
       openId: value.openid,

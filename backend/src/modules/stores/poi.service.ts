@@ -1,8 +1,24 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../../database/prisma.service';
+import type { RecordStatus } from '../../generated/prisma/client';
 import type { PoiSearchQueryDto } from './dto/poi-query.dto';
 import { TencentMapClient } from './tencent-map.client';
+import type { TencentPoi } from './tencent-map.client';
+
+interface PoiSearchResult {
+  hasMore: boolean;
+  items: Array<
+    TencentPoi & {
+      coordinateType: 'GCJ02';
+      existingRecord: { id: string; status: RecordStatus } | null;
+      provider: 'TENCENT';
+    }
+  >;
+  page: number;
+  pageSize: number;
+  total: number;
+}
 
 @Injectable()
 export class PoiService {
@@ -11,7 +27,7 @@ export class PoiService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async search(userId: string, query: PoiSearchQueryDto) {
+  async search(userId: string, query: PoiSearchQueryDto): Promise<PoiSearchResult> {
     const result = await this.map.search(query);
     const poiIds = result.items.map((item) => item.providerPoiId);
     const existingStores =

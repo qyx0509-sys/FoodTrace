@@ -210,12 +210,7 @@ async function testMigration(): Promise<void> {
       `INSERT INTO refresh_sessions (
         id, user_id, family_id, token_hash, device_id, expires_at
       ) VALUES ($1, $2, $3, $4, 'migration-test-device', now() + interval '1 day')`,
-      [
-        secondSessionId,
-        secondUserId,
-        '10000000-0000-4000-8000-000000000302',
-        'a'.repeat(64),
-      ],
+      [secondSessionId, secondUserId, '10000000-0000-4000-8000-000000000302', 'a'.repeat(64)],
     );
 
     await expectSqlState(

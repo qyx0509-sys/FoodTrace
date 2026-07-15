@@ -43,16 +43,46 @@ class HomePage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('服务连接', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                      Text(
+                        '服务连接',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w700),
+                      ),
                       const SizedBox(height: 14),
                       health.when(
-                        data: (_) => const Row(children: [Icon(Icons.check_circle_outline, color: Color(0xFF6F9368)), SizedBox(width: 10), Expanded(child: Text('食藏录服务已连接'))]),
-                        error: (_, _) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          const Text('暂时无法连接服务，请确认 API 地址和网络。'),
-                          const SizedBox(height: 12),
-                          OutlinedButton.icon(onPressed: () => ref.invalidate(healthStatusProvider), icon: const Icon(Icons.refresh), label: const Text('重新连接')),
-                        ]),
-                        loading: () => const Row(children: [SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2)), SizedBox(width: 12), Text('正在连接服务…')]),
+                        data: (_) => const Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle_outline,
+                              color: Color(0xFF6F9368),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(child: Text('食藏录服务已连接')),
+                          ],
+                        ),
+                        error: (_, _) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('暂时无法连接服务，请确认 API 地址和网络。'),
+                            const SizedBox(height: 12),
+                            OutlinedButton.icon(
+                              onPressed: () =>
+                                  ref.invalidate(healthStatusProvider),
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('重新连接'),
+                            ),
+                          ],
+                        ),
+                        loading: () => const Row(
+                          children: [
+                            SizedBox.square(
+                              dimension: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            SizedBox(width: 12),
+                            Text('正在连接服务…'),
+                          ],
+                        ),
                       ),
                     ],
                   ),

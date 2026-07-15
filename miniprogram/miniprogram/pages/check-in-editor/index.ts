@@ -143,7 +143,9 @@ Page<EditorData, EditorCustomOptions>({
   async loadStore(storeId: string): Promise<void> {
     const app = getApp<{ globalData: FoodTraceGlobalData }>();
     try {
-      const store = await new StoreService(createApiClient(app.globalData.apiBaseUrl)).getOne(storeId);
+      const store = await new StoreService(createApiClient(app.globalData.apiBaseUrl)).getOne(
+        storeId,
+      );
       this.applyStore(store);
     } catch {
       this.setData({ errorMessage: '店铺信息加载失败，请返回重试', loading: false });
@@ -153,7 +155,9 @@ Page<EditorData, EditorCustomOptions>({
   async loadRecord(recordId: string): Promise<void> {
     const app = getApp<{ globalData: FoodTraceGlobalData }>();
     try {
-      const record = await new RecordService(createApiClient(app.globalData.apiBaseUrl)).getOne(recordId);
+      const record = await new RecordService(createApiClient(app.globalData.apiBaseUrl)).getOne(
+        recordId,
+      );
       this.setData({
         address: record.store.address ?? '',
         avoidedDishesText: record.dishes
@@ -206,26 +210,80 @@ Page<EditorData, EditorCustomOptions>({
     }
   },
 
-  onStoreNameInput(event: InputEvent): void { this.setData({ storeName: valueOf(event) }); this.markDirty(); },
-  onAddressInput(event: InputEvent): void { this.setData({ address: valueOf(event) }); this.markDirty(); },
-  onLatitudeInput(event: InputEvent): void { this.setData({ latitude: valueOf(event) }); this.markDirty(); },
-  onLongitudeInput(event: InputEvent): void { this.setData({ longitude: valueOf(event) }); this.markDirty(); },
-  onRatingInput(event: InputEvent): void { this.setData({ overallRating: valueOf(event) }); this.markDirty(); },
-  onPriceInput(event: InputEvent): void { this.setData({ perCapitaPrice: valueOf(event) }); this.markDirty(); },
-  onSummaryInput(event: InputEvent): void { this.setData({ summary: valueOf(event) }); this.markDirty(); },
-  onNotesInput(event: InputEvent): void { this.setData({ notes: valueOf(event) }); this.markDirty(); },
-  onTagsInput(event: InputEvent): void { this.setData({ tagsText: valueOf(event) }); this.markDirty(); },
-  onTasteRatingInput(event: InputEvent): void { this.setData({ tasteRating: valueOf(event) }); this.markDirty(); },
-  onEnvironmentRatingInput(event: InputEvent): void { this.setData({ environmentRating: valueOf(event) }); this.markDirty(); },
-  onServiceRatingInput(event: InputEvent): void { this.setData({ serviceRating: valueOf(event) }); this.markDirty(); },
-  onValueRatingInput(event: InputEvent): void { this.setData({ valueRating: valueOf(event) }); this.markDirty(); },
-  onTotalPriceInput(event: InputEvent): void { this.setData({ totalPrice: valueOf(event) }); this.markDirty(); },
-  onCompanionsInput(event: InputEvent): void { this.setData({ companions: valueOf(event) }); this.markDirty(); },
-  onRecommendedDishesInput(event: InputEvent): void { this.setData({ recommendedDishesText: valueOf(event) }); this.markDirty(); },
-  onAvoidedDishesInput(event: InputEvent): void { this.setData({ avoidedDishesText: valueOf(event) }); this.markDirty(); },
-  onDateChange(event: InputEvent): void { this.setData({ visitedAt: valueOf(event) }); this.markDirty(); },
+  onStoreNameInput(event: InputEvent): void {
+    this.setData({ storeName: valueOf(event) });
+    this.markDirty();
+  },
+  onAddressInput(event: InputEvent): void {
+    this.setData({ address: valueOf(event) });
+    this.markDirty();
+  },
+  onLatitudeInput(event: InputEvent): void {
+    this.setData({ latitude: valueOf(event) });
+    this.markDirty();
+  },
+  onLongitudeInput(event: InputEvent): void {
+    this.setData({ longitude: valueOf(event) });
+    this.markDirty();
+  },
+  onRatingInput(event: InputEvent): void {
+    this.setData({ overallRating: valueOf(event) });
+    this.markDirty();
+  },
+  onPriceInput(event: InputEvent): void {
+    this.setData({ perCapitaPrice: valueOf(event) });
+    this.markDirty();
+  },
+  onSummaryInput(event: InputEvent): void {
+    this.setData({ summary: valueOf(event) });
+    this.markDirty();
+  },
+  onNotesInput(event: InputEvent): void {
+    this.setData({ notes: valueOf(event) });
+    this.markDirty();
+  },
+  onTagsInput(event: InputEvent): void {
+    this.setData({ tagsText: valueOf(event) });
+    this.markDirty();
+  },
+  onTasteRatingInput(event: InputEvent): void {
+    this.setData({ tasteRating: valueOf(event) });
+    this.markDirty();
+  },
+  onEnvironmentRatingInput(event: InputEvent): void {
+    this.setData({ environmentRating: valueOf(event) });
+    this.markDirty();
+  },
+  onServiceRatingInput(event: InputEvent): void {
+    this.setData({ serviceRating: valueOf(event) });
+    this.markDirty();
+  },
+  onValueRatingInput(event: InputEvent): void {
+    this.setData({ valueRating: valueOf(event) });
+    this.markDirty();
+  },
+  onTotalPriceInput(event: InputEvent): void {
+    this.setData({ totalPrice: valueOf(event) });
+    this.markDirty();
+  },
+  onCompanionsInput(event: InputEvent): void {
+    this.setData({ companions: valueOf(event) });
+    this.markDirty();
+  },
+  onRecommendedDishesInput(event: InputEvent): void {
+    this.setData({ recommendedDishesText: valueOf(event) });
+    this.markDirty();
+  },
+  onAvoidedDishesInput(event: InputEvent): void {
+    this.setData({ avoidedDishesText: valueOf(event) });
+    this.markDirty();
+  },
+  onDateChange(event: InputEvent): void {
+    this.setData({ visitedAt: valueOf(event) });
+    this.markDirty();
+  },
   onStatusChange(event: WechatMiniprogram.BaseEvent): void {
-    const status = event.currentTarget.dataset.status;
+    const { status } = event.currentTarget.dataset as { status?: unknown };
     if (status === 'WANT_TO_GO' || status === 'VISITED' || status === 'BLACKLISTED') {
       this.setData({ status });
       this.markDirty();
@@ -233,11 +291,14 @@ Page<EditorData, EditorCustomOptions>({
   },
 
   onUseLocation(): void {
-    wx.showLoading({ title: '正在定位' });
+    void wx.showLoading({ title: '正在定位' });
     void wx.getLocation({
       fail: () => wx.showToast({ icon: 'none', title: '未能取得位置，可手动填写经纬度' }),
       success: (location) => {
-        this.setData({ latitude: String(location.latitude), longitude: String(location.longitude) });
+        this.setData({
+          latitude: String(location.latitude),
+          longitude: String(location.longitude),
+        });
         this.markDirty();
       },
       complete: () => wx.hideLoading(),
@@ -246,7 +307,8 @@ Page<EditorData, EditorCustomOptions>({
   },
 
   async onSave(event: WechatMiniprogram.BaseEvent): Promise<void> {
-    const draft = event.currentTarget.dataset.draft === true;
+    const dataset = event.currentTarget.dataset as { draft?: unknown };
+    const draft = dataset.draft === true;
     if (this.data.saving) return;
     const validationMessage = this.validate();
     if (validationMessage !== '') {
@@ -267,8 +329,14 @@ Page<EditorData, EditorCustomOptions>({
         });
         storeId = store.id;
       }
-      const tags = this.data.tagsText.split(/[、,，]/).map((tag) => tag.trim()).filter(Boolean);
-      const toDishes = (text: string, type: 'RECOMMENDED' | 'AVOIDED') =>
+      const tags = this.data.tagsText
+        .split(/[、,，]/)
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+      const toDishes = (
+        text: string,
+        type: 'RECOMMENDED' | 'AVOIDED',
+      ): Array<{ name: string; type: 'RECOMMENDED' | 'AVOIDED' }> =>
         text
           .split(/[、,，]/)
           .map((name) => name.trim())
@@ -286,8 +354,7 @@ Page<EditorData, EditorCustomOptions>({
         notes: this.data.notes.trim() || undefined,
         overallRating: this.data.overallRating === '' ? undefined : Number(this.data.overallRating),
         perCapitaPrice: this.data.perCapitaPrice.trim() || undefined,
-        serviceRating:
-          this.data.serviceRating === '' ? undefined : Number(this.data.serviceRating),
+        serviceRating: this.data.serviceRating === '' ? undefined : Number(this.data.serviceRating),
         status: this.data.status,
         summary: this.data.summary.trim() || undefined,
         tags,
@@ -297,14 +364,17 @@ Page<EditorData, EditorCustomOptions>({
         visitedAt: this.data.status === 'VISITED' ? this.data.visitedAt : undefined,
       };
       const service = new RecordService(client);
-      const record: FoodRecordDetail = this.data.recordId === ''
-        ? await service.create({ ...input, clientRequestId: this.data.clientRequestId, storeId })
-        : await service.update(this.data.recordId, { ...input, version: this.data.version });
+      const record: FoodRecordDetail =
+        this.data.recordId === ''
+          ? await service.create({ ...input, clientRequestId: this.data.clientRequestId, storeId })
+          : await service.update(this.data.recordId, { ...input, version: this.data.version });
       wx.disableAlertBeforeUnload();
       this.setData({ dirty: false, recordId: record.id, version: record.version });
-      wx.showToast({ icon: 'success', title: draft ? '草稿已保存' : '记录已保存' });
+      void wx.showToast({ icon: 'success', title: draft ? '草稿已保存' : '记录已保存' });
       setTimeout(() => {
-        void wx.redirectTo({ url: `/pages/record-detail/index?id=${encodeURIComponent(record.id)}` });
+        void wx.redirectTo({
+          url: `/pages/record-detail/index?id=${encodeURIComponent(record.id)}`,
+        });
       }, 500);
     } catch {
       this.setData({ errorMessage: '保存失败，请检查网络后重试' });
@@ -333,7 +403,10 @@ Page<EditorData, EditorCustomOptions>({
         return `${label}评分需为 1 到 5，支持 0.5 分`;
       }
     }
-    if (this.data.perCapitaPrice !== '' && !/^\d{1,8}(?:\.\d{1,2})?$/.test(this.data.perCapitaPrice)) {
+    if (
+      this.data.perCapitaPrice !== '' &&
+      !/^\d{1,8}(?:\.\d{1,2})?$/.test(this.data.perCapitaPrice)
+    ) {
       return '人均消费最多保留两位小数';
     }
     if (this.data.totalPrice !== '' && !/^\d{1,8}(?:\.\d{1,2})?$/.test(this.data.totalPrice)) {

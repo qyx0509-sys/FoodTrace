@@ -28,7 +28,10 @@ const deviceKey = 'foodtrace:device-id';
 function createUuid(): string {
   const random = (): string => Math.floor(Math.random() * 16).toString(16);
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (character) => {
-    const value = character === 'x' ? Number.parseInt(random(), 16) : (Number.parseInt(random(), 16) & 0x3) | 0x8;
+    const value =
+      character === 'x'
+        ? Number.parseInt(random(), 16)
+        : (Number.parseInt(random(), 16) & 0x3) | 0x8;
     return value.toString(16);
   });
 }

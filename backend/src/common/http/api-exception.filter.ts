@@ -1,10 +1,4 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Response } from 'express';
 
@@ -46,9 +40,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
     const request = context.getRequest<RequestContext>();
     const response = context.getResponse<Response>();
     const isHttpError = exception instanceof HttpException;
-    const statusCode = isHttpError
-      ? exception.getStatus()
-      : HttpStatus.INTERNAL_SERVER_ERROR;
+    const statusCode = isHttpError ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
     const production = this.config.get<string>('NODE_ENV') === NodeEnvironment.Production;
     const details = isHttpError
       ? readHttpError(exception)

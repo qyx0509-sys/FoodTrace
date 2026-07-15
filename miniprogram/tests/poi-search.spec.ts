@@ -89,6 +89,7 @@ describe('poi search view state', () => {
         address: '测试路 1 号',
         categoryLabel: '中餐',
         distanceLabel: '860米',
+        existingRecordId: null,
         existingRecordLabel: '',
         hasExistingRecord: false,
         mapPoiId: 'poi-1',

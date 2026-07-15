@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   BadGatewayException,
   Injectable,
   NotFoundException,
@@ -77,6 +78,12 @@ export class TencentMapClient {
   constructor(private readonly config: ConfigService) {}
 
   async search(query: PoiSearchQueryDto): Promise<{ items: TencentPoi[]; total: number }> {
+    if ((query.latitude === undefined) !== (query.longitude === undefined)) {
+      throw new BadRequestException({
+        code: 'POI_COORDINATES_INCOMPLETE',
+        message: '纬度和经度必须同时提供',
+      });
+    }
     const parameters = new URLSearchParams({
       key: this.getKey(),
       keyword: query.keyword,
@@ -141,7 +148,10 @@ export class TencentMapClient {
     }
     const value = (await response.json()) as TencentResponse;
     if (value.status !== 0) {
-      throw new BadGatewayException({ code: 'MAP_UPSTREAM_ERROR', message: '餐厅搜索失败，请稍后重试' });
+      throw new BadGatewayException({
+        code: 'MAP_UPSTREAM_ERROR',
+        message: '餐厅搜索失败，请稍后重试',
+      });
     }
     return value;
   }

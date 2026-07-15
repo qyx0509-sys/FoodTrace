@@ -7,8 +7,14 @@ interface DetailView extends FoodRecordDetail {
   ratingLabel: string;
   statusLabel: string;
 }
-interface DetailData { errorMessage: string; loading: boolean; record: DetailView | null; }
-interface DetailOptions { id?: string; }
+interface DetailData {
+  errorMessage: string;
+  loading: boolean;
+  record: DetailView | null;
+}
+interface DetailOptions {
+  id?: string;
+}
 interface DetailCustomOptions {
   load(): Promise<void>;
   onDelete(): void;
@@ -38,7 +44,9 @@ Page<DetailData, DetailCustomOptions>({
     this.setData({ record: { id: options.id } as DetailView });
     void this.load();
   },
-  onShow(): void { if (this.data.record !== null && !this.data.loading) void this.load(); },
+  onShow(): void {
+    if (this.data.record !== null && !this.data.loading) void this.load();
+  },
   async load(): Promise<void> {
     const id = this.data.record?.id;
     if (id === undefined) return;
@@ -51,42 +59,57 @@ Page<DetailData, DetailCustomOptions>({
       this.setData({ errorMessage: '这条记录暂时无法打开', loading: false, record: null });
     }
   },
-  onRetry(): void { void this.load(); },
+  onRetry(): void {
+    void this.load();
+  },
   onEdit(): void {
-    if (this.data.record !== null) void wx.navigateTo({ url: `/pages/check-in-editor/index?id=${encodeURIComponent(this.data.record.id)}` });
+    if (this.data.record !== null)
+      void wx.navigateTo({
+        url: `/pages/check-in-editor/index?id=${encodeURIComponent(this.data.record.id)}`,
+      });
   },
   onOpenStore(): void {
-    if (this.data.record !== null) void wx.navigateTo({ url: `/pages/store-detail/index?id=${encodeURIComponent(this.data.record.store.id)}` });
+    if (this.data.record !== null)
+      void wx.navigateTo({
+        url: `/pages/store-detail/index?id=${encodeURIComponent(this.data.record.store.id)}`,
+      });
   },
   async onToggleFavorite(): Promise<void> {
     const record = this.data.record;
     if (record === null) return;
     const app = getApp<{ globalData: FoodTraceGlobalData }>();
     try {
-      const updated = await new RecordService(createApiClient(app.globalData.apiBaseUrl)).update(record.id, {
-        isFavorite: !record.isFavorite,
-        version: record.version,
-      });
+      const updated = await new RecordService(createApiClient(app.globalData.apiBaseUrl)).update(
+        record.id,
+        {
+          isFavorite: !record.isFavorite,
+          version: record.version,
+        },
+      );
       this.setData({ record: toView(updated) });
-      wx.showToast({ icon: 'success', title: updated.isFavorite ? '已收藏' : '已取消收藏' });
+      void wx.showToast({ icon: 'success', title: updated.isFavorite ? '已收藏' : '已取消收藏' });
     } catch {
-      wx.showToast({ icon: 'none', title: '操作失败，请稍后重试' });
+      void wx.showToast({ icon: 'none', title: '操作失败，请稍后重试' });
     }
   },
   onDelete(): void {
     const record = this.data.record;
     if (record === null) return;
     void wx.showModal({
-      cancelText: '取消', confirmColor: '#F05A47', confirmText: '删除', content: '删除后将不再出现在记录列表中。', title: '删除这条记录？',
+      cancelText: '取消',
+      confirmColor: '#F05A47',
+      confirmText: '删除',
+      content: '删除后将不再出现在记录列表中。',
+      title: '删除这条记录？',
       success: async (result) => {
         if (!result.confirm) return;
         const app = getApp<{ globalData: FoodTraceGlobalData }>();
         try {
           await new RecordService(createApiClient(app.globalData.apiBaseUrl)).remove(record.id);
-          wx.showToast({ icon: 'success', title: '已删除' });
+          void wx.showToast({ icon: 'success', title: '已删除' });
           setTimeout(() => void wx.navigateBack(), 400);
         } catch {
-          wx.showToast({ icon: 'none', title: '删除失败，请稍后重试' });
+          void wx.showToast({ icon: 'none', title: '删除失败，请稍后重试' });
         }
       },
     });

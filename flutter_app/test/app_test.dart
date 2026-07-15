@@ -4,12 +4,17 @@ import 'package:foodtrace_mobile/app/foodtrace_app.dart';
 import 'package:foodtrace_mobile/features/home/data/health_repository.dart';
 
 void main() {
-  testWidgets('renders the FoodTrace shell and real service state', (tester) async {
+  testWidgets('renders the FoodTrace shell and real service state', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           healthStatusProvider.overrideWith(
-            (ref) async => HealthStatus(service: 'foodtrace-api', timestamp: DateTime(2026)),
+            (ref) async => HealthStatus(
+              service: 'foodtrace-api',
+              timestamp: DateTime(2026),
+            ),
           ),
         ],
         child: const FoodTraceApp(),

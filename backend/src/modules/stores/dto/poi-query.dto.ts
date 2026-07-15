@@ -1,13 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import {
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
 
 export class PoiSearchQueryDto {
   @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value))

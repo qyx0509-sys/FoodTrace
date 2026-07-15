@@ -184,6 +184,9 @@ export function validateEnvironment(config: Record<string, unknown>): Environmen
 
   const production = validated.NODE_ENV === NodeEnvironment.Production;
   validateCorsOrigins(validated.CORS_ORIGINS, production);
+  if (production && validated.SWAGGER_ENABLED) {
+    throw new Error('Environment validation failed: production Swagger must remain disabled');
+  }
 
   if (validated.WECHAT_MINI_LOGIN_ENABLED) {
     assertConfigured(validated.WECHAT_MINI_APP_ID, 'WECHAT_MINI_APP_ID');

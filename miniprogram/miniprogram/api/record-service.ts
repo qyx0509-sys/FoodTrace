@@ -21,7 +21,7 @@ export interface FoodRecordDetail {
   dishes: Array<{ id: string; name: string; type: 'RECOMMENDED' | 'AVOIDED' }>;
   environmentRating: string | null;
   id: string;
-  images: Array<{ id: string; objectKey: string; sortOrder: number }>;
+  images: Array<{ id: string; sortOrder: number }>;
   isDraft: boolean;
   isFavorite: boolean;
   isRecommended: boolean | null;
@@ -80,13 +80,15 @@ export interface RecordInput {
 export class RecordService {
   constructor(private readonly client: Pick<HttpClient, 'request'>) {}
 
-  list(parameters: {
-    favorite?: boolean;
-    page?: number;
-    pageSize?: number;
-    query?: string;
-    status?: RecordStatus;
-  } = {}): Promise<RecordCollection> {
+  list(
+    parameters: {
+      favorite?: boolean;
+      page?: number;
+      pageSize?: number;
+      query?: string;
+      status?: RecordStatus;
+    } = {},
+  ): Promise<RecordCollection> {
     const query: Array<[string, string]> = [
       ['page', String(parameters.page ?? 1)],
       ['pageSize', String(parameters.pageSize ?? 20)],
@@ -105,11 +107,13 @@ export class RecordService {
     return this.client.request({ path: `/records/${encodeURIComponent(id)}` });
   }
 
-  create(input: RecordInput & { clientRequestId: string; status: RecordStatus; storeId: string }) {
+  create(
+    input: RecordInput & { clientRequestId: string; status: RecordStatus; storeId: string },
+  ): Promise<FoodRecordDetail> {
     return this.client.request<FoodRecordDetail>({ body: input, method: 'POST', path: '/records' });
   }
 
-  update(id: string, input: RecordInput & { version: number }) {
+  update(id: string, input: RecordInput & { version: number }): Promise<FoodRecordDetail> {
     return this.client.request<FoodRecordDetail>({
       body: input,
       method: 'PUT',

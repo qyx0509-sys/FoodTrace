@@ -46,6 +46,34 @@ for (const pagePath of appConfig.pages) {
   for (const extension of pageExtensions) {
     await access(new URL(`../miniprogram/${pagePath}${extension}`, import.meta.url));
   }
+
+  const pageScript = await readFile(
+    new URL(`../miniprogram/${pagePath}.ts`, import.meta.url),
+    'utf8',
+  );
+  const pageTemplate = await readFile(
+    new URL(`../miniprogram/${pagePath}.wxml`, import.meta.url),
+    'utf8',
+  );
+  const eventBindings = pageTemplate.matchAll(
+    /\b(?:bind|catch)(?::|[a-z-])*="([A-Za-z_$][\w$]*)"/g,
+  );
+  for (const binding of eventBindings) {
+    const handler = binding[1];
+    if (handler !== undefined && !new RegExp(`\\b${handler}\\s*\\(`).test(pageScript)) {
+      throw new Error(`${pagePath}.wxml binds missing handler ${handler}.`);
+    }
+  }
+
+  for (const source of [pageScript, pageTemplate]) {
+    const routeReferences = source.matchAll(/\/pages\/[a-z0-9-]+\/index/g);
+    for (const reference of routeReferences) {
+      const route = reference[0].slice(1);
+      if (!appConfig.pages.includes(route)) {
+        throw new Error(`${pagePath} references unregistered route ${route}.`);
+      }
+    }
+  }
 }
 
 for (const componentPath of requiredComponents) {

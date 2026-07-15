@@ -27,6 +27,7 @@ interface HomePageCustomOption {
   onOpenProfile(): void;
   onRetry(): void;
   onSearchStore(): void;
+  onShareAppMessage(): WechatMiniprogram.Page.ICustomShareContent;
   onStartCheckIn(): void;
 }
 
@@ -73,6 +74,13 @@ Page<HomeLoadState, HomePageCustomOption>({
 
   onPullDownRefresh(): void {
     void this.loadHome();
+  },
+
+  onShareAppMessage(): WechatMiniprogram.Page.ICustomShareContent {
+    return {
+      path: '/pages/home/index',
+      title: '食藏录 FoodTrace｜收藏你的私人美食足迹',
+    };
   },
 
   async loadHome(): Promise<void> {
@@ -134,7 +142,9 @@ Page<HomeLoadState, HomePageCustomOption>({
 
   onOpenRecord(event: ComponentActionEvent<{ id?: string }>): void {
     if (typeof event.detail.id === 'string') {
-      void wx.navigateTo({ url: `/pages/record-detail/index?id=${encodeURIComponent(event.detail.id)}` });
+      void wx.navigateTo({
+        url: `/pages/record-detail/index?id=${encodeURIComponent(event.detail.id)}`,
+      });
     }
   },
 

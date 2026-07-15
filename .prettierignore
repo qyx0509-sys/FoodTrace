@@ -1,4 +1,6 @@
 .dart_tool/
+.pub-cache/
+.tool-home/
 .git/
 build/
 coverage/

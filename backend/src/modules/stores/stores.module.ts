@@ -10,11 +10,6 @@ import { TencentMapClient } from './tencent-map.client';
 @Module({
   controllers: [StoresController],
   imports: [AuthModule],
-  providers: [
-    PoiService,
-    SensitiveRouteRateLimitGuard,
-    StoresService,
-    TencentMapClient,
-  ],
+  providers: [PoiService, SensitiveRouteRateLimitGuard, StoresService, TencentMapClient],
 })
 export class StoresModule {}

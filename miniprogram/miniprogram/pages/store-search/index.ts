@@ -294,18 +294,18 @@ Page<SearchPageData, SearchPageCustomOption>({
     }
 
     const app = getApp<{ globalData: FoodTraceGlobalData }>();
-    wx.showLoading({ mask: true, title: '正在加入店铺' });
+    void wx.showLoading({ mask: true, title: '正在加入店铺' });
     try {
-      const store = await new StoreService(createApiClient(app.globalData.apiBaseUrl)).createFromTencent(
-        dataset.mapPoiId,
-      );
+      const store = await new StoreService(
+        createApiClient(app.globalData.apiBaseUrl),
+      ).createFromTencent(dataset.mapPoiId);
       void wx.navigateTo({
         url: `/pages/check-in-editor/index?storeId=${encodeURIComponent(store.id)}`,
       });
     } catch {
       void wx.showToast({ icon: 'none', title: '加入店铺失败，请稍后重试' });
     } finally {
-      wx.hideLoading();
+      void wx.hideLoading();
     }
   },
 

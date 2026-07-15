@@ -31,9 +31,9 @@ describe('validateEnvironment', () => {
   });
 
   it('uses production-safe Swagger default and requires CORS allowlist', () => {
-    expect(() =>
-      validateEnvironment({ ...validConfiguration, NODE_ENV: 'production' }),
-    ).toThrow('production CORS_ORIGINS is required');
+    expect(() => validateEnvironment({ ...validConfiguration, NODE_ENV: 'production' })).toThrow(
+      'production CORS_ORIGINS is required',
+    );
 
     const config = validateEnvironment({
       ...validConfiguration,
@@ -41,6 +41,14 @@ describe('validateEnvironment', () => {
       NODE_ENV: 'production',
     });
     expect(config.SWAGGER_ENABLED).toBe(false);
+    expect(() =>
+      validateEnvironment({
+        ...validConfiguration,
+        CORS_ORIGINS: 'https://app.example.com',
+        NODE_ENV: 'production',
+        SWAGGER_ENABLED: 'true',
+      }),
+    ).toThrow('production Swagger must remain disabled');
   });
 
   it('rejects wildcard CORS and incomplete optional integrations', () => {
@@ -59,8 +67,8 @@ describe('validateEnvironment', () => {
     expect(() => validateEnvironment({ ...validConfiguration, PORT: 'not-a-port' })).toThrow(
       'Environment validation failed',
     );
-    expect(() =>
-      validateEnvironment({ ...validConfiguration, JWT_ACCESS_TTL_SECONDS: 0 }),
-    ).toThrow('Environment validation failed');
+    expect(() => validateEnvironment({ ...validConfiguration, JWT_ACCESS_TTL_SECONDS: 0 })).toThrow(
+      'Environment validation failed',
+    );
   });
 });

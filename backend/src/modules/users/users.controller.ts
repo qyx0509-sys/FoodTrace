@@ -15,7 +15,7 @@ export class UsersController {
 
   @Get('me')
   @ApiOperation({ summary: '获取当前 JWT 用户资料' })
-  getMe(@CurrentUser() auth: AuthenticatedUser) {
+  getMe(@CurrentUser() auth: AuthenticatedUser): ReturnType<UsersService['getMe']> {
     return this.users.getMe(auth.userId);
   }
 }

@@ -30,13 +30,19 @@ export class RecordsController {
 
   @Post()
   @ApiOperation({ summary: '创建幂等的私人餐厅记录' })
-  create(@CurrentUser() auth: AuthenticatedUser, @Body() dto: CreateFoodRecordDto) {
+  create(
+    @CurrentUser() auth: AuthenticatedUser,
+    @Body() dto: CreateFoodRecordDto,
+  ): ReturnType<RecordsService['create']> {
     return this.records.create(auth.userId, dto);
   }
 
   @Get()
   @ApiOperation({ summary: '分页查询当前用户的有效记录' })
-  list(@CurrentUser() auth: AuthenticatedUser, @Query() query: RecordListQueryDto) {
+  list(
+    @CurrentUser() auth: AuthenticatedUser,
+    @Query() query: RecordListQueryDto,
+  ): ReturnType<RecordsService['list']> {
     return this.records.list(auth.userId, query);
   }
 
@@ -45,7 +51,7 @@ export class RecordsController {
   getOne(
     @CurrentUser() auth: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) id: string,
-  ) {
+  ): ReturnType<RecordsService['getOne']> {
     return this.records.getOne(auth.userId, id);
   }
 
@@ -55,7 +61,7 @@ export class RecordsController {
     @CurrentUser() auth: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateFoodRecordDto,
-  ) {
+  ): ReturnType<RecordsService['update']> {
     return this.records.update(auth.userId, id, dto);
   }
 
@@ -65,7 +71,7 @@ export class RecordsController {
     @CurrentUser() auth: AuthenticatedUser,
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateFoodRecordDto,
-  ) {
+  ): ReturnType<RecordsService['update']> {
     return this.records.update(auth.userId, id, dto);
   }
 

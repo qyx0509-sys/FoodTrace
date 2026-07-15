@@ -21,12 +21,19 @@ function isHealthResponseBody(value: unknown): value is HealthResponseBody {
   return (
     typeof value === 'object' &&
     value !== null &&
-    'success' in value && value.success === true &&
-    'requestId' in value && typeof value.requestId === 'string' &&
-    'data' in value && typeof value.data === 'object' && value.data !== null &&
-    'service' in value.data && typeof value.data.service === 'string' &&
-    'status' in value.data && typeof value.data.status === 'string' &&
-    'timestamp' in value.data && typeof value.data.timestamp === 'string'
+    'success' in value &&
+    value.success === true &&
+    'requestId' in value &&
+    typeof value.requestId === 'string' &&
+    'data' in value &&
+    typeof value.data === 'object' &&
+    value.data !== null &&
+    'service' in value.data &&
+    typeof value.data.service === 'string' &&
+    'status' in value.data &&
+    typeof value.data.status === 'string' &&
+    'timestamp' in value.data &&
+    typeof value.data.timestamp === 'string'
   );
 }
 

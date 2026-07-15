@@ -13,10 +13,16 @@ interface RecordsData {
   status: '' | RecordStatus;
 }
 
-interface RecordListView extends FoodRecordDetail { displayDate: string; }
+interface RecordListView extends FoodRecordDetail {
+  displayDate: string;
+}
 
-interface RecordsOptions { status?: string; }
-interface InputEvent extends WechatMiniprogram.BaseEvent { detail: { value: string }; }
+interface RecordsOptions {
+  status?: string;
+}
+interface InputEvent extends WechatMiniprogram.BaseEvent {
+  detail: { value: string };
+}
 interface RecordsCustomOptions {
   load(reset: boolean): Promise<void>;
   onCreate(): void;
@@ -33,13 +39,26 @@ function isStatus(value: unknown): value is RecordStatus {
 }
 
 Page<RecordsData, RecordsCustomOptions>({
-  data: { errorMessage: '', hasMore: false, items: [], loading: true, loadingMore: false, page: 1, query: '', status: '' },
+  data: {
+    errorMessage: '',
+    hasMore: false,
+    items: [],
+    loading: true,
+    loadingMore: false,
+    page: 1,
+    query: '',
+    status: '',
+  },
   onLoad(options: RecordsOptions): void {
     if (isStatus(options.status)) this.setData({ status: options.status });
     void this.load(true);
   },
-  onPullDownRefresh(): void { void this.load(true); },
-  onReachBottom(): void { this.onLoadMore(); },
+  onPullDownRefresh(): void {
+    void this.load(true);
+  },
+  onReachBottom(): void {
+    this.onLoadMore();
+  },
 
   async load(reset: boolean): Promise<void> {
     if (this.data.loadingMore || (!reset && !this.data.hasMore)) return;
@@ -53,29 +72,51 @@ Page<RecordsData, RecordsCustomOptions>({
         query: this.data.query.trim() || undefined,
         status: this.data.status || undefined,
       });
-      const items = result.items.map((item) => ({ ...item, displayDate: item.updatedAt.slice(0, 10) }));
+      const items = result.items.map((item) => ({
+        ...item,
+        displayDate: item.updatedAt.slice(0, 10),
+      }));
       this.setData({
-        errorMessage: '', hasMore: result.hasMore, items: reset ? items : [...this.data.items, ...items],
-        loading: false, loadingMore: false, page,
+        errorMessage: '',
+        hasMore: result.hasMore,
+        items: reset ? items : [...this.data.items, ...items],
+        loading: false,
+        loadingMore: false,
+        page,
       });
     } catch {
-      this.setData({ errorMessage: '记录加载失败，请检查网络后重试', loading: false, loadingMore: false });
+      this.setData({
+        errorMessage: '记录加载失败，请检查网络后重试',
+        loading: false,
+        loadingMore: false,
+      });
     } finally {
-      wx.stopPullDownRefresh();
+      void wx.stopPullDownRefresh();
     }
   },
-  onInput(event: InputEvent): void { this.setData({ query: event.detail.value }); },
-  onSearch(): void { void this.load(true); },
-  onRetry(): void { void this.load(true); },
-  onLoadMore(): void { void this.load(false); },
+  onInput(event: InputEvent): void {
+    this.setData({ query: event.detail.value });
+  },
+  onSearch(): void {
+    void this.load(true);
+  },
+  onRetry(): void {
+    void this.load(true);
+  },
+  onLoadMore(): void {
+    void this.load(false);
+  },
   onStatus(event: WechatMiniprogram.BaseEvent): void {
-    const status = event.currentTarget.dataset.status;
+    const { status } = event.currentTarget.dataset as { status?: unknown };
     this.setData({ status: isStatus(status) ? status : '' });
     void this.load(true);
   },
   onOpen(event: WechatMiniprogram.BaseEvent): void {
-    const id = event.currentTarget.dataset.id;
-    if (typeof id === 'string') void wx.navigateTo({ url: `/pages/record-detail/index?id=${encodeURIComponent(id)}` });
+    const { id } = event.currentTarget.dataset as { id?: unknown };
+    if (typeof id === 'string')
+      void wx.navigateTo({ url: `/pages/record-detail/index?id=${encodeURIComponent(id)}` });
   },
-  onCreate(): void { void wx.navigateTo({ url: '/pages/store-search/index?mode=checkin' }); },
+  onCreate(): void {
+    void wx.navigateTo({ url: '/pages/store-search/index?mode=checkin' });
+  },
 });
