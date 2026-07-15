@@ -1,4 +1,11 @@
 <view class="home-page">
+  <view class="home-brand-row">
+    <view>
+      <text class="home-brand">食藏录</text>
+      <text class="home-date">FoodTrace · 私人美食手账</text>
+    </view>
+    <button class="profile-entry" bindtap="onOpenProfile">我的</button>
+  </view>
   <view class="greeting-card ft-card-enter">
     <view class="greeting-copy">
       <view class="greeting-title" role="heading" aria-level="1">{{greetingTitle}}</view>
@@ -13,13 +20,13 @@
   </view>
 
   <view class="primary-action">
-    <ft-primary-button icon="＋" label="一键打卡" bind:action="onStartCheckIn" />
+    <ft-primary-button icon="＋" label="记录今天吃了什么" bind:action="onStartCheckIn" />
   </view>
 
   <view class="quick-grid ft-card-enter" aria-label="快捷操作">
     <view class="quick-cell">
       <ft-quick-action-card
-        title="搜索店铺"
+        title="附近餐厅"
         description="从地图或关键词搜索"
         icon="search"
         tone="orange"

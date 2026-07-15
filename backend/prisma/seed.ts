@@ -41,14 +41,14 @@ async function seed(): Promise<void> {
     where: { id: seedIds.user },
     update: {
       locale: 'zh-CN',
-      nickname: '食迹体验用户',
+      nickname: '食藏录体验用户',
       status: 'ACTIVE',
       timezone: 'Asia/Shanghai',
     },
     create: {
       id: seedIds.user,
       locale: 'zh-CN',
-      nickname: '食迹体验用户',
+      nickname: '食藏录体验用户',
       timezone: 'Asia/Shanghai',
     },
   });
@@ -67,7 +67,7 @@ async function seed(): Promise<void> {
       district: '黄浦区',
       latitude: '31.2304160',
       longitude: '121.4737010',
-      name: '食迹示例本帮菜',
+      name: '食藏录示例本帮菜',
     },
     create: {
       id: seedIds.visitedStore,
@@ -79,7 +79,7 @@ async function seed(): Promise<void> {
       latitude: '31.2304160',
       longitude: '121.4737010',
       mapPoiId: 'dev-tencent-poi-001',
-      name: '食迹示例本帮菜',
+      name: '食藏录示例本帮菜',
       source: StoreSource.TENCENT_POI,
       userId: seedIds.user,
     },
@@ -89,7 +89,7 @@ async function seed(): Promise<void> {
     where: { id: seedIds.wantedStore },
     update: {
       address: '上海市徐汇区示例路 2 号',
-      name: '食迹手动添加咖啡店',
+      name: '食藏录手动添加咖啡店',
     },
     create: {
       id: seedIds.wantedStore,
@@ -100,7 +100,7 @@ async function seed(): Promise<void> {
       district: '徐汇区',
       latitude: '31.1885230',
       longitude: '121.4365250',
-      name: '食迹手动添加咖啡店',
+      name: '食藏录手动添加咖啡店',
       source: StoreSource.MANUAL,
       userId: seedIds.user,
     },
@@ -115,7 +115,7 @@ async function seed(): Promise<void> {
     },
     update: {
       address: '上海市静安区示例路 3 号',
-      name: '食迹示例踩雷店',
+      name: '食藏录示例踩雷店',
     },
     create: {
       id: seedIds.blockedStore,
@@ -127,7 +127,7 @@ async function seed(): Promise<void> {
       latitude: '31.2290030',
       longitude: '121.4467080',
       mapPoiId: 'dev-tencent-poi-002',
-      name: '食迹示例踩雷店',
+      name: '食藏录示例踩雷店',
       source: StoreSource.TENCENT_POI,
       userId: seedIds.user,
     },

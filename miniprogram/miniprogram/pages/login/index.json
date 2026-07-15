@@ -1,0 +1,8 @@
+{
+  "navigationBarBackgroundColor": "#FFF9F3",
+  "navigationBarTitleText": "登录食藏录",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "primary-button": "/components/primary-button/index"
+  }
+}

@@ -1,0 +1,7 @@
+.store-page { min-height: 100vh; padding: 26rpx 28rpx 64rpx; }
+.state-card, .hero-card, .info-card { background: #fff; border: 1rpx solid var(--ft-color-border); border-radius: var(--ft-radius-card); box-shadow: var(--ft-shadow-card); padding: 30rpx; }
+.state-card { align-items: center; display: flex; flex-direction: column; min-height: 240rpx; justify-content: center; }
+.secondary { background: var(--ft-color-primary-soft); color: var(--ft-color-primary); margin-top: 20rpx; }
+.hero-card { background: var(--ft-color-primary-soft); }.eyebrow { color: var(--ft-color-primary); display: block; font-size: 21rpx; }.store-name { display: block; font-size: 42rpx; font-weight: 700; margin-top: 12rpx; }.category { color: var(--ft-color-text-secondary); display: block; margin-top: 8rpx; }
+.info-card { margin-top: 20rpx; }.label { color: var(--ft-color-text-secondary); display: block; font-size: 22rpx; margin-top: 22rpx; }.label:first-child { margin-top: 0; }.value { display: block; font-size: 27rpx; margin-top: 5rpx; }
+.primary { background: var(--ft-color-primary); border-radius: 22rpx; box-shadow: var(--ft-shadow-primary); color: #fff; font-weight: 650; margin-top: 26rpx; min-height: 88rpx; width: 100%; }

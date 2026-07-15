@@ -4,9 +4,15 @@ const requiredJsonFiles = [
   'project.config.example.json',
   'miniprogram/app.json',
   'miniprogram/sitemap.json',
+  'miniprogram/pages/login/index.json',
   'miniprogram/pages/home/index.json',
   'miniprogram/pages/store-search/index.json',
+  'miniprogram/pages/store-detail/index.json',
+  'miniprogram/pages/check-in-editor/index.json',
+  'miniprogram/pages/records/index.json',
+  'miniprogram/pages/record-detail/index.json',
   'miniprogram/pages/daily-journal/index.json',
+  'miniprogram/pages/profile/index.json',
 ];
 
 const requiredComponents = [

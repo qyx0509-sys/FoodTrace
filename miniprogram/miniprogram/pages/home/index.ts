@@ -9,6 +9,10 @@ import {
   type HomeLoadState,
 } from '../../features/home/home-state';
 import { loadDailyJournal } from '../../services/journal-service';
+import { createApiClient } from '../../api/api-client';
+import { RecordService } from '../../api/record-service';
+import { authSession } from '../../services/auth-session';
+import { toCachedHomeRecord } from '../../features/home/record-mapper';
 
 interface ComponentActionEvent<T> extends WechatMiniprogram.BaseEvent {
   detail: T;
@@ -20,6 +24,7 @@ interface HomePageCustomOption {
   onManualAdd(): void;
   onOpenList(event: ComponentActionEvent<{ label?: string; status?: string }>): void;
   onOpenRecord(event: ComponentActionEvent<{ id?: string }>): void;
+  onOpenProfile(): void;
   onRetry(): void;
   onSearchStore(): void;
   onStartCheckIn(): void;
@@ -53,6 +58,10 @@ Page<HomeLoadState, HomePageCustomOption>({
   data: initialState,
 
   onLoad(): void {
+    if (authSession.getAccessToken() === null) {
+      void wx.reLaunch({ url: '/pages/login/index' });
+      return;
+    }
     void this.loadHome();
   },
 
@@ -72,7 +81,23 @@ Page<HomeLoadState, HomePageCustomOption>({
     const app = getApp<{ globalData: FoodTraceGlobalData }>();
 
     try {
-      const records = await readRecentRecords(app.globalData.currentUserId);
+      const userId = app.globalData.currentUserId;
+      if (userId === null) {
+        void wx.reLaunch({ url: '/pages/login/index' });
+        return;
+      }
+      let records: CachedHomeRecord[];
+      try {
+        const client = createApiClient(app.globalData.apiBaseUrl);
+        const collection = await new RecordService(client).list({ pageSize: 50 });
+        records = collection.items.map(toCachedHomeRecord);
+        wx.setStorageSync(getHomeCacheKey(userId), records);
+      } catch {
+        records = await readRecentRecords(userId);
+        if (records.length === 0) {
+          throw new Error('HOME_DATA_UNAVAILABLE');
+        }
+      }
       this.setData(createHomeLoadState(records, now));
     } catch {
       this.setData(createHomeErrorState(now));
@@ -93,16 +118,24 @@ Page<HomeLoadState, HomePageCustomOption>({
     void wx.navigateTo({ url: '/pages/store-search/index?mode=browse' });
   },
 
+  onOpenProfile(): void {
+    void wx.navigateTo({ url: '/pages/profile/index' });
+  },
+
   onManualAdd(): void {
-    void wx.showToast({ icon: 'none', title: '手动添加页将在后续开放' });
+    void wx.navigateTo({ url: '/pages/check-in-editor/index?mode=manual' });
   },
 
   onOpenList(event: ComponentActionEvent<{ label?: string; status?: string }>): void {
-    void wx.showToast({ icon: 'none', title: `${event.detail.label ?? '该'}清单将在后续开放` });
+    const status = event.detail.status;
+    const query = typeof status === 'string' ? `?status=${encodeURIComponent(status)}` : '';
+    void wx.navigateTo({ url: `/pages/records/index${query}` });
   },
 
-  onOpenRecord(): void {
-    void wx.showToast({ icon: 'none', title: '店铺详情页将在后续开放' });
+  onOpenRecord(event: ComponentActionEvent<{ id?: string }>): void {
+    if (typeof event.detail.id === 'string') {
+      void wx.navigateTo({ url: `/pages/record-detail/index?id=${encodeURIComponent(event.detail.id)}` });
+    }
   },
 
   async onGenerateJournal(): Promise<void> {

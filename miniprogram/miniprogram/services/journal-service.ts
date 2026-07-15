@@ -14,6 +14,7 @@ export interface DailyJournalRecord {
   regionLabel: string;
   storeName: string;
   tags: string[];
+  totalPrice: number | null;
   updatedAt: string;
 }
 
@@ -96,6 +97,7 @@ function toJournalRecord(record: CachedHomeRecord): DailyJournalRecord {
     regionLabel: record.businessArea ?? record.district ?? '',
     storeName: record.storeName,
     tags: record.tags ?? [],
+    totalPrice: record.totalPrice ?? null,
     updatedAt: record.updatedAt,
   };
 }
@@ -169,6 +171,9 @@ export function createDailyJournal(records: CachedHomeRecord[], now: Date): Dail
     .map(toJournalRecord);
   const averagePerCapita = getAveragePerCapita(allVisitedRecords);
   const visibleRecords = allVisitedRecords.slice(0, 4);
+  const knownTotals = allVisitedRecords
+    .map((record) => record.totalPrice)
+    .filter((price): price is number => price !== null);
 
   return {
     averagePerCapita,
@@ -178,7 +183,8 @@ export function createDailyJournal(records: CachedHomeRecord[], now: Date): Dail
     records: visibleRecords,
     summary: createJournalSummary(allVisitedRecords, averagePerCapita),
     totalCount: allVisitedRecords.length,
-    totalSpent: null,
+    totalSpent:
+      knownTotals.length === 0 ? null : knownTotals.reduce((sum, price) => sum + price, 0),
     weekdayLabel: weekdays[now.getDay()] ?? '',
   };
 }

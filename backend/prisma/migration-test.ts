@@ -110,6 +110,8 @@ async function readCount(client: Client, table: string, userId?: string): Promis
     'food_record_tags',
     'record_images',
     'dish_items',
+    'auth_identities',
+    'refresh_sessions',
   ]);
   if (!safeTables.has(table)) {
     throw new Error(`Unexpected table name: ${table}`);
@@ -162,12 +164,14 @@ async function testMigration(): Promise<void> {
           'tags',
           'food_record_tags',
           'record_images',
-          'dish_items'
+          'dish_items',
+          'auth_identities',
+          'refresh_sessions'
         )
       ORDER BY table_name
     `);
-    if (tableResult.rowCount !== 7) {
-      throw new Error(`Expected 7 MVP tables, found ${tableResult.rowCount ?? 0}.`);
+    if (tableResult.rowCount !== 9) {
+      throw new Error(`Expected 9 core tables, found ${tableResult.rowCount ?? 0}.`);
     }
 
     if (
@@ -181,6 +185,7 @@ async function testMigration(): Promise<void> {
     const seedUserId = '00000000-0000-4000-8000-000000000001';
     const secondUserId = '10000000-0000-4000-8000-000000000001';
     const secondStoreId = '10000000-0000-4000-8000-000000000101';
+    const secondSessionId = '10000000-0000-4000-8000-000000000301';
 
     await expectSqlState(
       client.query(
@@ -201,6 +206,17 @@ async function testMigration(): Promise<void> {
       ) VALUES ($1, $2, 'TENCENT_POI', 'dev-tencent-poi-001', '另一用户的同一 POI', 31.2, 121.4)`,
       [secondStoreId, secondUserId],
     );
+    await client.query(
+      `INSERT INTO refresh_sessions (
+        id, user_id, family_id, token_hash, device_id, expires_at
+      ) VALUES ($1, $2, $3, $4, 'migration-test-device', now() + interval '1 day')`,
+      [
+        secondSessionId,
+        secondUserId,
+        '10000000-0000-4000-8000-000000000302',
+        'a'.repeat(64),
+      ],
+    );
 
     await expectSqlState(
       client.query(
@@ -213,6 +229,16 @@ async function testMigration(): Promise<void> {
         ],
       ),
       '23503',
+    );
+
+    await expectSqlState(
+      client.query(
+        `INSERT INTO food_records (
+          id, user_id, store_id, status, total_price
+        ) VALUES ($1, $2, $3, 'VISITED', -0.01)`,
+        ['10000000-0000-4000-8000-000000000203', secondUserId, secondStoreId],
+      ),
+      '23514',
     );
 
     await expectSqlState(
@@ -233,6 +259,8 @@ async function testMigration(): Promise<void> {
       'food_record_tags',
       'record_images',
       'dish_items',
+      'auth_identities',
+      'refresh_sessions',
     ]) {
       if ((await readCount(client, table, seedUserId)) !== 0) {
         throw new Error(`User cascade delete left rows in ${table}.`);

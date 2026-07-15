@@ -3,6 +3,38 @@
   padding: 20rpx 28rpx 72rpx;
 }
 
+.home-brand-row {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 2rpx 4rpx 24rpx;
+}
+
+.home-brand {
+  color: var(--ft-color-text);
+  display: block;
+  font-size: 34rpx;
+  font-weight: 700;
+  letter-spacing: 3rpx;
+}
+
+.home-date {
+  color: var(--ft-color-text-secondary);
+  display: block;
+  font-size: 20rpx;
+  margin-top: 4rpx;
+}
+
+.profile-entry {
+  background: var(--ft-color-primary-soft);
+  border-radius: 20rpx;
+  color: var(--ft-color-primary);
+  font-size: 24rpx;
+  line-height: 64rpx;
+  min-height: 64rpx;
+  padding: 0 24rpx;
+}
+
 .greeting-card {
   position: relative;
   display: flex;

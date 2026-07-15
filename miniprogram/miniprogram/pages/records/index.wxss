@@ -1,0 +1,22 @@
+.records-page { min-height: 100vh; padding: 24rpx 28rpx 64rpx; }
+.search-row { display: flex; gap: 12rpx; }
+.search-input { background: #fff; border: 1rpx solid var(--ft-color-border); border-radius: 20rpx; flex: 1; min-height: 76rpx; padding: 0 20rpx; }
+.search-button, .primary-button { background: var(--ft-color-primary); border-radius: 20rpx; color: #fff; font-size: 25rpx; min-height: 76rpx; padding: 0 28rpx; }
+.status-tabs { margin: 22rpx 0; white-space: nowrap; }
+.tab { background: var(--ft-color-primary-soft); border-radius: 999rpx; color: var(--ft-color-text-secondary); display: inline-block; font-size: 24rpx; line-height: 62rpx; margin-right: 12rpx; min-height: 62rpx; padding: 0 26rpx; }
+.tab.active { background: var(--ft-color-primary); color: #fff; }
+.state-card, .record-card { background: #fff; border: 1rpx solid var(--ft-color-border); border-radius: var(--ft-radius-card); box-shadow: var(--ft-shadow-card); margin-top: 18rpx; padding: 28rpx; width: 100%; }
+.state-card { align-items: center; display: flex; flex-direction: column; min-height: 260rpx; justify-content: center; text-align: center; }
+.empty-icon { align-items: center; background: var(--ft-color-primary-soft); border-radius: 50%; color: var(--ft-color-primary); display: flex; font-size: 34rpx; height: 90rpx; justify-content: center; width: 90rpx; }
+.state-title { font-size: 31rpx; font-weight: 650; margin-top: 18rpx; }
+.state-copy, .record-meta { color: var(--ft-color-text-secondary); font-size: 23rpx; margin-top: 8rpx; }
+.outline-button { background: var(--ft-color-primary-soft); border-radius: 18rpx; color: var(--ft-color-primary); margin-top: 20rpx; }
+.primary-button { margin-top: 22rpx; }
+.record-card { text-align: left; }
+.record-head { align-items: center; display: flex; justify-content: space-between; }
+.record-name { font-size: 31rpx; font-weight: 650; max-width: 480rpx; }
+.status-label, .tag { background: var(--ft-color-primary-soft); border-radius: 999rpx; color: var(--ft-color-primary); font-size: 21rpx; padding: 7rpx 14rpx; }
+.record-meta, .record-summary { display: block; }
+.record-summary { font-size: 25rpx; margin-top: 14rpx; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 10rpx; margin-top: 14rpx; }
+.page-state { color: var(--ft-color-text-secondary); font-size: 22rpx; padding: 30rpx; text-align: center; }

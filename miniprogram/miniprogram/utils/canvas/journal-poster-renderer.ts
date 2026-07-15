@@ -384,7 +384,7 @@ function drawFooter(context: CanvasContext, journal: DailyJournal): void {
 
   context.fillStyle = journalTheme.primary;
   context.font = '700 27px sans-serif';
-  context.fillText('食迹 FOODTRACE', pageMargin, 1380);
+  context.fillText('食藏录 FOODTRACE', pageMargin, 1380);
   context.fillStyle = journalTheme.textSecondary;
   context.font = '400 21px sans-serif';
   context.textAlign = 'right';

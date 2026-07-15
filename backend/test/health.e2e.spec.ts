@@ -8,21 +8,25 @@ import { AppModule } from '../src/app.module';
 import { configureApplication } from '../src/bootstrap';
 
 interface HealthResponseBody {
-  service: string;
-  status: string;
-  timestamp: string;
+  data: {
+    service: string;
+    status: string;
+    timestamp: string;
+  };
+  requestId: string;
+  success: true;
 }
 
 function isHealthResponseBody(value: unknown): value is HealthResponseBody {
   return (
     typeof value === 'object' &&
     value !== null &&
-    'service' in value &&
-    typeof value.service === 'string' &&
-    'status' in value &&
-    typeof value.status === 'string' &&
-    'timestamp' in value &&
-    typeof value.timestamp === 'string'
+    'success' in value && value.success === true &&
+    'requestId' in value && typeof value.requestId === 'string' &&
+    'data' in value && typeof value.data === 'object' && value.data !== null &&
+    'service' in value.data && typeof value.data.service === 'string' &&
+    'status' in value.data && typeof value.data.status === 'string' &&
+    'timestamp' in value.data && typeof value.data.timestamp === 'string'
   );
 }
 
@@ -31,7 +35,7 @@ describe('health endpoint', () => {
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    app = moduleRef.createNestApplication();
+    app = moduleRef.createNestApplication({ bodyParser: false });
     configureApplication(app);
     await app.init();
   });
@@ -49,13 +53,13 @@ describe('health endpoint', () => {
     const body: unknown = response.body;
 
     expect(body).toMatchObject({
-      service: 'foodtrace-api',
-      status: 'ok',
+      data: { service: 'foodtrace-api', status: 'ok' },
+      success: true,
     });
     expect(isHealthResponseBody(body)).toBe(true);
     if (!isHealthResponseBody(body)) {
       throw new Error('Health response body is invalid');
     }
-    expect(new Date(body.timestamp).toString()).not.toBe('Invalid Date');
+    expect(new Date(body.data.timestamp).toString()).not.toBe('Invalid Date');
   });
 });

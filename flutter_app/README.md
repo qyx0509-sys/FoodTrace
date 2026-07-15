@@ -1,6 +1,6 @@
-# 食迹 Flutter App
+# 食藏录 Flutter App
 
-本目录是食迹 Android/iOS 客户端的 Flutter 工程，状态管理使用 Riverpod，网络层使用 Dio。
+本目录是食藏录 Android/iOS 客户端的 Flutter 工程，状态管理使用 Riverpod，网络层使用 Dio。
 
 阶段 2 已使用 Flutter `3.44.6`、Dart `3.12.2` 生成 `android/` 与 `ios/` 平台目录。当前 application ID / Bundle ID 暂定为 `com.foodtrace.foodtrace_mobile`，接入微信开放平台和正式签名前必须确认最终标识。
 

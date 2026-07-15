@@ -4,6 +4,8 @@ export type RequestBody = WechatMiniprogram.IAnyObject | string | ArrayBuffer;
 
 export interface TokenProvider {
   getAccessToken(): string | null;
+  onAuthenticationExpired?(): void;
+  refreshAccessToken?(): Promise<string | null>;
 }
 
 export interface RequestOptions {
@@ -58,6 +60,10 @@ function isErrorEnvelope(value: unknown): value is ApiErrorEnvelope {
   );
 }
 
+function isSuccessEnvelope<T>(value: unknown): value is ApiSuccessEnvelope<T> {
+  return typeof value === 'object' && value !== null && 'data' in value;
+}
+
 export class HttpClient {
   constructor(
     private readonly baseUrl: string,
@@ -65,6 +71,10 @@ export class HttpClient {
   ) {}
 
   request<T>(options: RequestOptions): Promise<T> {
+    return this.execute<T>(options, false);
+  }
+
+  private execute<T>(options: RequestOptions, retried: boolean): Promise<T> {
     const accessToken = this.tokenProvider.getAccessToken();
     const header: Record<string, string> = {
       'content-type': 'application/json',
@@ -84,8 +94,28 @@ export class HttpClient {
         header,
         method: options.method ?? 'GET',
         success: (response) => {
-          if (response.statusCode >= 200 && response.statusCode < 300 && 'data' in response.data) {
+          if (response.statusCode === 204) {
+            resolve(undefined as T);
+            return;
+          }
+          if (
+            response.statusCode >= 200 &&
+            response.statusCode < 300 &&
+            isSuccessEnvelope<T>(response.data)
+          ) {
             resolve(response.data.data);
+            return;
+          }
+
+          if (response.statusCode === 401 && !retried && this.tokenProvider.refreshAccessToken) {
+            void this.tokenProvider.refreshAccessToken().then((token) => {
+              if (token === null) {
+                this.tokenProvider.onAuthenticationExpired?.();
+                reject(new ApiError('AUTH_EXPIRED', '登录已失效，请重新登录', 401));
+                return;
+              }
+              this.execute<T>(options, true).then(resolve, reject);
+            });
             return;
           }
 

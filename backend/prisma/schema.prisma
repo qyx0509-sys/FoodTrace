@@ -11,8 +11,16 @@ datasource db {
 enum UserStatus {
   ACTIVE
   DISABLED
+  DELETED
 
   @@map("user_status")
+}
+
+enum IdentityProvider {
+  WECHAT_MINI
+  WECHAT_MOBILE
+
+  @@map("identity_provider")
 }
 
 enum StoreSource {
@@ -50,6 +58,8 @@ model User {
   timezone        String        @default("Asia/Shanghai") @db.VarChar(64)
   locale          String        @default("zh-CN") @db.VarChar(16)
   status          UserStatus    @default(ACTIVE)
+  tokenVersion    Int           @default(0) @map("token_version")
+  deletedAt       DateTime?     @map("deleted_at") @db.Timestamptz(3)
   lastLoginAt     DateTime?     @map("last_login_at") @db.Timestamptz(3)
   createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -59,9 +69,48 @@ model User {
   recordTags      RecordTag[]
   recordImages    RecordImage[]
   dishRecords     DishRecord[]
+  authIdentities  AuthIdentity[]
+  refreshSessions RefreshSession[]
 
   @@index([status, createdAt], map: "users_status_created_at_idx")
   @@map("users")
+}
+
+model AuthIdentity {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String           @map("user_id") @db.Uuid
+  provider       IdentityProvider
+  appId          String           @map("app_id") @db.VarChar(128)
+  providerUserId String           @map("provider_user_id") @db.VarChar(128)
+  unionId        String?          @map("union_id") @db.VarChar(128)
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, appId, providerUserId], map: "auth_identities_provider_app_user_key")
+  @@index([unionId], map: "auth_identities_union_id_idx")
+  @@index([userId], map: "auth_identities_user_id_idx")
+  @@map("auth_identities")
+}
+
+model RefreshSession {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  familyId         String    @map("family_id") @db.Uuid
+  tokenHash        String    @unique(map: "refresh_sessions_token_hash_key") @map("token_hash") @db.Char(64)
+  deviceId         String    @map("device_id") @db.VarChar(128)
+  deviceName       String?   @map("device_name") @db.VarChar(120)
+  expiresAt        DateTime  @map("expires_at") @db.Timestamptz(3)
+  lastUsedAt       DateTime? @map("last_used_at") @db.Timestamptz(3)
+  revokedAt        DateTime? @map("revoked_at") @db.Timestamptz(3)
+  reuseDetectedAt  DateTime? @map("reuse_detected_at") @db.Timestamptz(3)
+  replacedById     String?   @map("replaced_by_id") @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt], map: "refresh_sessions_user_expires_at_idx")
+  @@index([familyId, revokedAt], map: "refresh_sessions_family_revoked_at_idx")
+  @@map("refresh_sessions")
 }
 
 model Store {
@@ -81,6 +130,7 @@ model Store {
   coordinateType CoordinateType @default(GCJ02) @map("coordinate_type")
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt      DateTime?      @map("deleted_at") @db.Timestamptz(3)
   user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   foodRecord     FoodRecord?
 
@@ -89,6 +139,7 @@ model Store {
   @@index([userId, city], map: "stores_user_id_city_idx")
   @@index([userId, latitude], map: "stores_user_id_latitude_idx")
   @@index([userId, longitude], map: "stores_user_id_longitude_idx")
+  @@index([userId, deletedAt, updatedAt(sort: Desc)], map: "stores_user_deleted_updated_idx")
   @@map("stores")
 }
 
@@ -96,18 +147,30 @@ model FoodRecord {
   id                String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId            String        @map("user_id") @db.Uuid
   storeId           String        @map("store_id") @db.Uuid
+  clientRequestId   String?       @map("client_request_id") @db.Uuid
   status            RecordStatus
   overallRating     Decimal?      @map("overall_rating") @db.Decimal(2, 1)
   tasteRating       Decimal?      @map("taste_rating") @db.Decimal(2, 1)
   environmentRating Decimal?      @map("environment_rating") @db.Decimal(2, 1)
   serviceRating     Decimal?      @map("service_rating") @db.Decimal(2, 1)
+  valueRating       Decimal?      @map("value_rating") @db.Decimal(2, 1)
   perCapitaPrice    Decimal?      @map("per_capita_price") @db.Decimal(10, 2)
+  totalPrice        Decimal?      @map("total_price") @db.Decimal(10, 2)
   currency          String        @default("CNY") @db.Char(3)
   visitedAt         DateTime?     @map("visited_at") @db.Date
+  mealAt            DateTime?     @map("meal_at") @db.Timestamptz(3)
+  companionCount    Int?          @map("companion_count") @db.SmallInt
+  companions        String?       @db.VarChar(300)
+  summary           String?       @db.VarChar(280)
   notes             String?       @db.Text
+  isRecommended     Boolean?      @map("is_recommended")
+  wouldRevisit      Boolean?      @map("would_revisit")
+  isFavorite        Boolean       @default(false) @map("is_favorite")
+  isDraft           Boolean       @default(false) @map("is_draft")
   version           Int           @default(1)
   createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt         DateTime?     @map("deleted_at") @db.Timestamptz(3)
   user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   store             Store         @relation(fields: [userId, storeId], references: [userId, id], onDelete: Cascade)
   recordTags        RecordTag[]
@@ -116,9 +179,12 @@ model FoodRecord {
 
   @@unique([userId, id], map: "food_records_user_id_id_key")
   @@unique([userId, storeId], map: "food_records_user_id_store_id_key")
+  @@unique([userId, clientRequestId], map: "food_records_user_client_request_id_key")
   @@index([userId, status, updatedAt(sort: Desc), id(sort: Desc)], map: "food_records_user_status_updated_id_idx")
   @@index([userId, visitedAt(sort: Desc)], map: "food_records_user_visited_at_idx")
   @@index([userId, overallRating(sort: Desc)], map: "food_records_user_overall_rating_idx")
+  @@index([userId, deletedAt, updatedAt(sort: Desc), id(sort: Desc)], map: "food_records_user_deleted_updated_id_idx")
+  @@index([userId, isFavorite, deletedAt, updatedAt(sort: Desc)], map: "food_records_user_favorite_deleted_updated_idx")
   @@map("food_records")
 }
 

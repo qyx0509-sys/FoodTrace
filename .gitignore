@@ -21,6 +21,8 @@ pnpm-debug.log*
 # WeChat Mini Program local settings
 miniprogram/project.config.json
 miniprogram/project.private.config.json
+/project.config.json
+/project.private.config.json
 
 # Flutter and Dart
 flutter_app/.dart_tool/
@@ -32,6 +34,13 @@ flutter_app/coverage/
 flutter_app/android/key.properties
 flutter_app/android/*.jks
 flutter_app/android/*.keystore
+flutter_app/android/app/*.jks
+flutter_app/android/app/*.keystore
+flutter_app/android/app/google-services.json
+flutter_app/ios/**/*.p12
+flutter_app/ios/**/*.mobileprovision
+flutter_app/ios/**/*.entitlements.local
+flutter_app/ios/GoogleService-Info.plist
 
 # IDE and operating system
 .idea/

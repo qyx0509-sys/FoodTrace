@@ -1,0 +1,26 @@
+<view class="detail-page">
+  <view wx:if="{{loading}}" class="state-card">正在翻开这页记录…</view>
+  <view wx:elif="{{errorMessage}}" class="state-card"><text>{{errorMessage}}</text><button class="outline-button" bindtap="onRetry">重新加载</button></view>
+  <block wx:elif="{{record}}">
+    <button class="store-card" bindtap="onOpenStore">
+      <view><text class="store-name">{{record.store.name}}</text><text class="store-address">{{record.store.address || record.store.city || '地址未补充'}}</text></view><text class="arrow">›</text>
+    </button>
+    <view class="summary-card">
+      <view class="summary-row"><text class="status-label">{{record.statusLabel}}</text><text class="date">{{record.dateLabel}}</text></view>
+      <text class="rating">{{record.ratingLabel}}</text>
+      <text wx:if="{{record.perCapitaPrice}}" class="price">人均 ¥{{record.perCapitaPrice}}</text>
+      <text wx:if="{{record.summary}}" class="summary">“{{record.summary}}”</text>
+      <view class="tags"><text wx:for="{{record.tags}}" wx:key="id" class="tag"># {{item.name}}</text></view>
+    </view>
+    <view wx:if="{{record.notes || record.dishes.length > 0}}" class="content-card">
+      <text class="section-title">这一餐的细节</text>
+      <text wx:if="{{record.notes}}" class="notes">{{record.notes}}</text>
+      <view wx:if="{{record.dishes.length > 0}}" class="dishes"><text wx:for="{{record.dishes}}" wx:key="id" class="dish">{{item.type === 'RECOMMENDED' ? '推荐' : '踩雷'}} · {{item.name}}</text></view>
+    </view>
+    <view class="actions">
+      <button class="secondary" bindtap="onToggleFavorite">{{record.isFavorite ? '取消收藏' : '收藏'}}</button>
+      <button class="secondary" bindtap="onEdit">编辑</button>
+      <button class="danger" bindtap="onDelete">删除</button>
+    </view>
+  </block>
+</view>

@@ -27,7 +27,7 @@
   <view class="scope-card">
     <view class="scope-header">
       <view class="scope-title">搜索范围</view>
-      <button class="map-pick-button" bindtap="onMapPick">在地图中选择</button>
+      <view class="scope-tip">定位仅在你主动使用时申请</view>
     </view>
 
     <button
@@ -122,7 +122,8 @@
         wx:for="{{results}}"
         wx:key="mapPoiId"
         class="result-card"
-        data-existing="{{item.hasExistingRecord}}"
+        data-existing-record-id="{{item.existingRecordId}}"
+        data-map-poi-id="{{item.mapPoiId}}"
         hover-class="result-card-active"
         bindtap="onSelectPoi"
       >

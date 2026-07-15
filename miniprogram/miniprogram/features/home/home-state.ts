@@ -14,6 +14,7 @@ export interface CachedHomeRecord {
   status: FoodRecordStatus;
   storeName: string;
   tags?: string[];
+  totalPrice?: number;
   updatedAt: string;
   visitedAt?: string;
 }
@@ -164,6 +165,10 @@ export function normalizeCachedHomeRecords(value: unknown): CachedHomeRecord[] {
     const perCapitaPrice = readOptionalNumber(item, 'perCapitaPrice');
     if (perCapitaPrice !== undefined) {
       record.perCapitaPrice = perCapitaPrice;
+    }
+    const totalPrice = readOptionalNumber(item, 'totalPrice');
+    if (totalPrice !== undefined) {
+      record.totalPrice = totalPrice;
     }
     const tags = readStringList(item, 'tags');
     if (tags !== undefined) {

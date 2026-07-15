@@ -11,11 +11,23 @@ class FoodTraceApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6D5E3F)),
-        scaffoldBackgroundColor: const Color(0xFFF7F7F5),
+        cardTheme: const CardThemeData(
+          color: Colors.white,
+          elevation: 0,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(22)),
+            side: BorderSide(color: Color(0xFFF0DDD3)),
+          ),
+        ),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFF05A47),
+          surface: Colors.white,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFFFF9F3),
         useMaterial3: true,
       ),
-      title: '食迹',
+      title: '食藏录',
     );
   }
 }

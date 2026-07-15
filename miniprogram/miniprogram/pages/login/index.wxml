@@ -1,0 +1,21 @@
+<view class="login-page">
+  <view class="brand-mark" aria-hidden="true">
+    <view class="brand-bowl">藏</view>
+    <view class="brand-steam brand-steam--left"></view>
+    <view class="brand-steam brand-steam--right"></view>
+  </view>
+  <text class="login-title">食藏录</text>
+  <text class="login-subtitle">FoodTrace · 把喜欢的味道认真收藏</text>
+  <view class="login-card">
+    <text class="login-card__title">登录后开始记录</text>
+    <text class="login-card__description">你的店铺、照片和用餐感受只属于你，不会变成公开点评。</text>
+    <text wx:if="{{errorMessage}}" class="login-error" role="alert">{{errorMessage}}</text>
+    <primary-button
+      label="{{loading ? '正在登录…' : '微信快捷登录'}}"
+      loading="{{loading}}"
+      disabled="{{loading}}"
+      bind:action="onLogin"
+    />
+  </view>
+  <text class="privacy-hint">继续即表示允许使用微信身份识别你的私人数据空间。</text>
+</view>

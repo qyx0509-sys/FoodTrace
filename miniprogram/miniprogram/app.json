@@ -1,11 +1,21 @@
 {
-  "pages": ["pages/home/index", "pages/store-search/index", "pages/daily-journal/index"],
+  "pages": [
+    "pages/login/index",
+    "pages/home/index",
+    "pages/store-search/index",
+    "pages/store-detail/index",
+    "pages/check-in-editor/index",
+    "pages/records/index",
+    "pages/record-detail/index",
+    "pages/daily-journal/index",
+    "pages/profile/index"
+  ],
   "window": {
     "backgroundColor": "#FFF8F3",
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#FFF8F3",
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "食迹"
+    "navigationBarTitleText": "食藏录"
   },
   "permission": {
     "scope.userLocation": {

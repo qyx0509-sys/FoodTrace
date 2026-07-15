@@ -1,0 +1,27 @@
+<view class="records-page">
+  <view class="search-row">
+    <input class="search-input" value="{{query}}" confirm-type="search" placeholder="搜索店名、标签或笔记" bindinput="onInput" bindconfirm="onSearch" />
+    <button class="search-button" bindtap="onSearch">搜索</button>
+  </view>
+  <scroll-view class="status-tabs" scroll-x enhanced show-scrollbar="{{false}}">
+    <button class="tab {{status === '' ? 'active' : ''}}" data-status="" bindtap="onStatus">全部</button>
+    <button class="tab {{status === 'WANT_TO_GO' ? 'active' : ''}}" data-status="WANT_TO_GO" bindtap="onStatus">想去</button>
+    <button class="tab {{status === 'VISITED' ? 'active' : ''}}" data-status="VISITED" bindtap="onStatus">已打卡</button>
+    <button class="tab {{status === 'BLACKLISTED' ? 'active' : ''}}" data-status="BLACKLISTED" bindtap="onStatus">黑名单</button>
+  </scroll-view>
+  <view wx:if="{{loading}}" class="state-card">正在整理你的美食档案…</view>
+  <view wx:elif="{{errorMessage}}" class="state-card"><text>{{errorMessage}}</text><button class="outline-button" bindtap="onRetry">重新加载</button></view>
+  <view wx:elif="{{items.length === 0}}" class="state-card">
+    <text class="empty-icon">藏</text><text class="state-title">这里还空着</text><text class="state-copy">从第一家想去或吃过的店开始记录吧。</text>
+    <button class="primary-button" bindtap="onCreate">记录一家店</button>
+  </view>
+  <view wx:else>
+    <button wx:for="{{items}}" wx:key="id" class="record-card" data-id="{{item.id}}" bindtap="onOpen">
+      <view class="record-head"><text class="record-name">{{item.store.name}}</text><text class="status-label">{{item.status === 'VISITED' ? '已打卡' : item.status === 'WANT_TO_GO' ? '想去' : '黑名单'}}</text></view>
+      <text class="record-meta">{{item.store.district || item.store.city || item.store.address || '位置未补充'}} · {{item.displayDate}}</text>
+      <text wx:if="{{item.summary}}" class="record-summary">{{item.summary}}</text>
+      <view class="tag-row"><text wx:for="{{item.tags}}" wx:key="id" class="tag">{{item.name}}</text></view>
+    </button>
+    <view class="page-state">{{loadingMore ? '正在加载…' : hasMore ? '继续下滑查看更多' : '已经到底啦'}}</view>
+  </view>
+</view>

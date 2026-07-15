@@ -1,0 +1,14 @@
+<view class="profile-page">
+  <view wx:if="{{loading}}" class="state-card">正在读取你的私人档案…</view>
+  <view wx:elif="{{errorMessage}}" class="state-card"><text>{{errorMessage}}</text><button class="secondary" bindtap="onRetry">重新加载</button></view>
+  <block wx:else>
+    <view class="profile-card">
+      <view class="avatar">藏</view>
+      <text class="name">{{user.nickname || '食藏录用户'}}</text>
+      <text class="subtitle">FoodTrace 私人美食档案</text>
+    </view>
+    <button class="menu-card" bindtap="onOpenRecords"><view><text class="menu-title">我的全部记录</text><text class="menu-copy">想去、已打卡与黑名单</text></view><text class="arrow">›</text></button>
+    <view class="privacy-card"><text class="privacy-title">关于你的数据</text><text class="privacy-copy">记录只通过当前登录身份读取。客户端缓存中的用户编号不会被后端当作授权依据。</text></view>
+    <button class="logout" bindtap="onLogout">退出登录</button>
+  </block>
+</view>

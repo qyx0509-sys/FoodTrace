@@ -1,0 +1,23 @@
+.editor-page { min-height: 100vh; padding: 26rpx 28rpx 64rpx; }
+.intro-card, .form-card, .state-card { background: #fff; border: 1rpx solid var(--ft-color-border); border-radius: var(--ft-radius-card); box-shadow: var(--ft-shadow-card); padding: 28rpx; }
+.intro-card { background: var(--ft-color-primary-soft); }
+.intro-title { display: block; font-size: 34rpx; font-weight: 700; }
+.intro-copy { color: var(--ft-color-text-secondary); display: block; font-size: 24rpx; margin-top: 8rpx; }
+.form-card { margin-top: 22rpx; }
+.field-label { display: block; font-size: 24rpx; font-weight: 600; margin: 24rpx 0 10rpx; }
+.field-label:first-child { margin-top: 0; }
+.field-input, .field-textarea { background: #fffaf6; border: 1rpx solid var(--ft-color-border); border-radius: 18rpx; font-size: 26rpx; min-height: 76rpx; padding: 16rpx 20rpx; width: 100%; }
+.field-textarea { height: 190rpx; }
+.location-row, .status-row, .two-column, .action-row, .rating-grid { display: flex; gap: 14rpx; }
+.coordinate, .column { flex: 1; min-width: 0; }
+.location-row { align-items: center; margin-top: 14rpx; }
+.secondary-button, .draft-button, .status-chip { background: var(--ft-color-primary-soft); border: 1rpx solid var(--ft-color-border); border-radius: 18rpx; color: var(--ft-color-primary); font-size: 23rpx; min-height: 76rpx; padding: 0 18rpx; }
+.status-chip { flex: 1; min-height: 68rpx; }
+.status-chip.active { background: var(--ft-color-primary); color: #fff; }
+.two-column { margin-top: 4rpx; }
+.rating-grid { flex-wrap: wrap; }
+.rating-cell { flex: 1 1 42%; min-width: 0; }
+.error-message { background: #f9ece8; border-radius: 18rpx; color: #a14d40; margin-top: 18rpx; padding: 18rpx; }
+.action-row { align-items: center; margin-top: 26rpx; }
+.draft-button { flex: 0 0 190rpx; }
+.save-button { flex: 1; }

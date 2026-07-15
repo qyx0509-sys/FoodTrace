@@ -1,5 +1,6 @@
-import { HttpClient } from '../../api/http-client';
+import { createApiClient } from '../../api/api-client';
 import { PoiService } from '../../api/poi-service';
+import { StoreService } from '../../api/store-service';
 import type { FoodTraceGlobalData } from '../../app';
 import {
   getSearchErrorMessage,
@@ -45,24 +46,18 @@ interface SearchPageCustomOption {
   onClear(): void;
   onInput(event: TextInputEvent): void;
   onManualAdd(): void;
-  onMapPick(): void;
   onOpenSettings(): void;
   onRetryLocation(): void;
   onRetrySearch(): void;
   onRecentKeyword(event: WechatMiniprogram.BaseEvent): void;
   onSearchConfirm(): void;
-  onSelectPoi(event: WechatMiniprogram.BaseEvent): void;
+  onSelectPoi(event: WechatMiniprogram.BaseEvent): Promise<void>;
   onUseLocation(): void;
   saveRecentKeyword(keyword: string): void;
 }
 
 let searchTimer: ReturnType<typeof setTimeout> | undefined;
 let latestSearchSequence = 0;
-
-function readAccessToken(): string | null {
-  const value: unknown = wx.getStorageSync('foodtrace:access-token');
-  return typeof value === 'string' && value.length > 0 ? value : null;
-}
 
 function getSearchHistoryKey(userId: string): string {
   return `foodtrace:user:${userId}:poi-search:recent-keywords`;
@@ -73,8 +68,8 @@ Page<SearchPageData, SearchPageCustomOption>({
     city: '',
     errorMessage: '',
     latitude: null,
-    locationMessage: '正在获取当前位置…',
-    locationStatus: 'loading',
+    locationMessage: '需要时再获取位置，也可以直接按城市搜索。',
+    locationStatus: 'idle',
     longitude: null,
     query: '',
     recentKeywords: [],
@@ -93,7 +88,6 @@ Page<SearchPageData, SearchPageCustomOption>({
       );
       this.setData({ recentKeywords: normalizeRecentKeywords(cachedValue) });
     }
-    this.loadLocation();
   },
 
   onUnload(): void {
@@ -198,9 +192,7 @@ Page<SearchPageData, SearchPageCustomOption>({
     });
 
     const app = getApp<{ globalData: FoodTraceGlobalData }>();
-    const client = new HttpClient(app.globalData.apiBaseUrl, {
-      getAccessToken: readAccessToken,
-    });
+    const client = createApiClient(app.globalData.apiBaseUrl);
     const poiService = new PoiService(client);
 
     try {
@@ -285,16 +277,40 @@ Page<SearchPageData, SearchPageCustomOption>({
     }
   },
 
-  onSelectPoi(event: WechatMiniprogram.BaseEvent): void {
-    const dataset = event.currentTarget.dataset as { existing?: boolean };
-    void wx.showToast({
-      icon: 'none',
-      title: dataset.existing ? '这家店已在你的清单里' : '新增打卡页将在后续开放',
-    });
+  async onSelectPoi(event: WechatMiniprogram.BaseEvent): Promise<void> {
+    const dataset = event.currentTarget.dataset as {
+      existingRecordId?: unknown;
+      mapPoiId?: unknown;
+    };
+    if (typeof dataset.existingRecordId === 'string' && dataset.existingRecordId.length > 0) {
+      void wx.navigateTo({
+        url: `/pages/record-detail/index?id=${encodeURIComponent(dataset.existingRecordId)}`,
+      });
+      return;
+    }
+    if (typeof dataset.mapPoiId !== 'string' || dataset.mapPoiId.length === 0) {
+      void wx.showToast({ icon: 'none', title: '店铺信息不完整，请重新搜索' });
+      return;
+    }
+
+    const app = getApp<{ globalData: FoodTraceGlobalData }>();
+    wx.showLoading({ mask: true, title: '正在加入店铺' });
+    try {
+      const store = await new StoreService(createApiClient(app.globalData.apiBaseUrl)).createFromTencent(
+        dataset.mapPoiId,
+      );
+      void wx.navigateTo({
+        url: `/pages/check-in-editor/index?storeId=${encodeURIComponent(store.id)}`,
+      });
+    } catch {
+      void wx.showToast({ icon: 'none', title: '加入店铺失败，请稍后重试' });
+    } finally {
+      wx.hideLoading();
+    }
   },
 
   onManualAdd(): void {
-    void wx.showToast({ icon: 'none', title: '手动添加页将在后续开放' });
+    void wx.navigateTo({ url: '/pages/check-in-editor/index?mode=manual' });
   },
 
   onCityInput(event: TextInputEvent): void {
@@ -312,10 +328,6 @@ Page<SearchPageData, SearchPageCustomOption>({
     if (this.data.locationStatus !== 'ready') {
       this.loadLocation();
     }
-  },
-
-  onMapPick(): void {
-    void wx.showToast({ icon: 'none', title: '地图选点将在地图页阶段开放' });
   },
 
   hasValidScope(): boolean {

@@ -1,0 +1,59 @@
+<view class="editor-page">
+  <view wx:if="{{loading}}" class="state-card">正在准备记录…</view>
+  <block wx:else>
+    <view class="intro-card">
+      <text class="intro-title">把这一餐认真藏起来</text>
+      <text class="intro-copy">评分和感受都可以稍后补充，店铺与位置用于整理你的私人足迹。</text>
+    </view>
+    <view wx:if="{{errorMessage}}" class="error-message" role="alert">{{errorMessage}}</view>
+    <view class="form-card">
+      <text class="field-label">店铺名称 *</text>
+      <input class="field-input" value="{{storeName}}" maxlength="100" disabled="{{storeId !== ''}}" placeholder="例如：巷口面馆" bindinput="onStoreNameInput" />
+      <text class="field-label">地址</text>
+      <input class="field-input" value="{{address}}" maxlength="300" disabled="{{storeId !== ''}}" placeholder="填写街道或商圈" bindinput="onAddressInput" />
+      <view wx:if="{{storeId === ''}}" class="location-row">
+        <input class="field-input coordinate" type="digit" value="{{latitude}}" placeholder="纬度" bindinput="onLatitudeInput" />
+        <input class="field-input coordinate" type="digit" value="{{longitude}}" placeholder="经度" bindinput="onLongitudeInput" />
+        <button class="secondary-button" bindtap="onUseLocation">用当前位置</button>
+      </view>
+      <text class="field-label">状态</text>
+      <view class="status-row">
+        <button class="status-chip {{status === 'WANT_TO_GO' ? 'active' : ''}}" data-status="WANT_TO_GO" bindtap="onStatusChange">想去</button>
+        <button class="status-chip {{status === 'VISITED' ? 'active' : ''}}" data-status="VISITED" bindtap="onStatusChange">已打卡</button>
+        <button class="status-chip {{status === 'BLACKLISTED' ? 'active' : ''}}" data-status="BLACKLISTED" bindtap="onStatusChange">黑名单</button>
+      </view>
+      <block wx:if="{{status === 'VISITED'}}">
+        <text class="field-label">用餐日期</text>
+        <picker mode="date" value="{{visitedAt}}" bindchange="onDateChange"><view class="field-input">{{visitedAt}}</view></picker>
+        <view class="two-column">
+          <view class="column"><text class="field-label">综合评分</text><input class="field-input" type="digit" value="{{overallRating}}" placeholder="1—5" bindinput="onRatingInput" /></view>
+          <view class="column"><text class="field-label">人均消费</text><input class="field-input" type="digit" value="{{perCapitaPrice}}" placeholder="元" bindinput="onPriceInput" /></view>
+        </view>
+        <view class="rating-grid">
+          <view class="rating-cell"><text class="field-label">口味</text><input class="field-input" type="digit" value="{{tasteRating}}" placeholder="1—5" bindinput="onTasteRatingInput" /></view>
+          <view class="rating-cell"><text class="field-label">环境</text><input class="field-input" type="digit" value="{{environmentRating}}" placeholder="1—5" bindinput="onEnvironmentRatingInput" /></view>
+          <view class="rating-cell"><text class="field-label">服务</text><input class="field-input" type="digit" value="{{serviceRating}}" placeholder="1—5" bindinput="onServiceRatingInput" /></view>
+          <view class="rating-cell"><text class="field-label">性价比</text><input class="field-input" type="digit" value="{{valueRating}}" placeholder="1—5" bindinput="onValueRatingInput" /></view>
+        </view>
+        <view class="two-column">
+          <view class="column"><text class="field-label">总消费</text><input class="field-input" type="digit" value="{{totalPrice}}" placeholder="元" bindinput="onTotalPriceInput" /></view>
+          <view class="column"><text class="field-label">同行人</text><input class="field-input" value="{{companions}}" maxlength="300" placeholder="可选" bindinput="onCompanionsInput" /></view>
+        </view>
+        <text class="field-label">推荐菜</text>
+        <input class="field-input" value="{{recommendedDishesText}}" maxlength="300" placeholder="用逗号分隔" bindinput="onRecommendedDishesInput" />
+        <text class="field-label">踩雷菜</text>
+        <input class="field-input" value="{{avoidedDishesText}}" maxlength="300" placeholder="用逗号分隔" bindinput="onAvoidedDishesInput" />
+      </block>
+      <text class="field-label">一句话感受</text>
+      <input class="field-input" value="{{summary}}" maxlength="280" placeholder="今天最想记住的味道" bindinput="onSummaryInput" />
+      <text class="field-label">标签</text>
+      <input class="field-input" value="{{tagsText}}" maxlength="100" placeholder="用逗号分隔，例如：川菜、夜宵" bindinput="onTagsInput" />
+      <text class="field-label">详细笔记</text>
+      <textarea class="field-textarea" value="{{notes}}" maxlength="5000" placeholder="菜品、同行人或想补充的细节" bindinput="onNotesInput" />
+    </view>
+    <view class="action-row">
+      <button class="draft-button" data-draft="{{true}}" disabled="{{saving}}" bindtap="onSave">保存草稿</button>
+      <view class="save-button"><primary-button label="{{saving ? '保存中…' : '保存记录'}}" loading="{{saving}}" disabled="{{saving}}" bind:action="onSave" /></view>
+    </view>
+  </block>
+</view>

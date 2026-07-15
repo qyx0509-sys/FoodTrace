@@ -2,7 +2,7 @@ import { ApiError } from '../../api/http-client';
 import type { ExistingRecordStatus, PoiSearchItem } from '../../api/poi-service';
 
 export type SearchStatus = 'idle' | 'loading' | 'results' | 'empty' | 'error';
-export type LocationStatus = 'loading' | 'ready' | 'denied' | 'error';
+export type LocationStatus = 'idle' | 'loading' | 'ready' | 'denied' | 'error';
 export type SearchScopeMode = 'location' | 'city';
 
 export interface KeywordValidation {
@@ -17,6 +17,7 @@ export interface PoiSearchView {
   distanceLabel: string;
   existingRecordLabel: string;
   hasExistingRecord: boolean;
+  existingRecordId: string | null;
   mapPoiId: string;
   name: string;
 }
@@ -109,6 +110,7 @@ export function toPoiSearchViews(items: PoiSearchItem[]): PoiSearchView[] {
       distanceLabel: formatDistance(item.distanceMeters),
       existingRecordLabel:
         item.existingRecord === null ? '' : existingRecordLabels[item.existingRecord.status],
+      existingRecordId: item.existingRecord?.id ?? null,
       hasExistingRecord: item.existingRecord !== null,
       mapPoiId: item.providerPoiId,
       name: item.name,

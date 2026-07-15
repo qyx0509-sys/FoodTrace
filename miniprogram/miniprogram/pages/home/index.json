@@ -2,7 +2,7 @@
   "backgroundColor": "#FFF9F3",
   "enablePullDownRefresh": true,
   "navigationBarBackgroundColor": "#FFF9F3",
-  "navigationBarTitleText": "食迹",
+  "navigationBarTitleText": "食藏录",
   "usingComponents": {
     "ft-empty-state": "/components/empty-state/index",
     "ft-food-card": "/components/food-card/index",

@@ -2,10 +2,10 @@
   "name": "foodtrace",
   "version": "0.1.0",
   "private": true,
-  "description": "食迹私人美食记录产品",
+  "description": "食藏录 FoodTrace 私人美食记录产品",
   "packageManager": "pnpm@11.7.0",
   "engines": {
-    "node": ">=22"
+    "node": ">=22 <23"
   },
   "scripts": {
     "backend:dev": "pnpm --filter @foodtrace/api start:dev",
@@ -16,6 +16,9 @@
     "typecheck": "pnpm --recursive --if-present typecheck",
     "test": "pnpm --recursive --if-present test",
     "build": "pnpm --recursive --if-present build",
+    "flutter:format:check": "cd flutter_app && dart format --output=none --set-exit-if-changed .",
+    "flutter:analyze": "cd flutter_app && flutter analyze",
+    "flutter:test": "cd flutter_app && flutter test",
     "prisma:format": "pnpm --filter @foodtrace/api prisma:format",
     "prisma:validate": "pnpm --filter @foodtrace/api prisma:validate",
     "prisma:generate": "pnpm --filter @foodtrace/api prisma:generate",

@@ -1,6 +1,10 @@
 import type { FoodTraceGlobalData } from '../../app';
+import { createApiClient } from '../../api/api-client';
+import { RecordService } from '../../api/record-service';
+import { getHomeCacheKey } from '../../features/home/home-state';
+import { toCachedHomeRecord } from '../../features/home/record-mapper';
 import type { DailyJournal } from '../../services/journal-service';
-import { loadDailyJournal } from '../../services/journal-service';
+import { createDailyJournal, loadDailyJournal } from '../../services/journal-service';
 
 type JournalPageStatus = 'loading' | 'generating' | 'ready' | 'empty' | 'error';
 
@@ -53,7 +57,21 @@ Page<JournalPageData, DailyJournalPageOption>({
     this.setData({ errorMessage: '', posterPath: '', status: 'loading' });
     const app = getApp<{ globalData: FoodTraceGlobalData }>();
     try {
-      const journal = await loadDailyJournal(app.globalData.currentUserId, new Date());
+      const now = new Date();
+      let journal: DailyJournal;
+      try {
+        const result = await new RecordService(createApiClient(app.globalData.apiBaseUrl)).list({
+          pageSize: 50,
+          status: 'VISITED',
+        });
+        const records = result.items.map(toCachedHomeRecord);
+        journal = createDailyJournal(records, now);
+        if (app.globalData.currentUserId !== null) {
+          wx.setStorageSync(getHomeCacheKey(app.globalData.currentUserId), records);
+        }
+      } catch {
+        journal = await loadDailyJournal(app.globalData.currentUserId, now);
+      }
       if (journal.totalCount === 0 || journal.records.length === 0) {
         this.setData({ journal, status: 'empty' });
         return;

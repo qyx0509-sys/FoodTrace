@@ -1,0 +1,18 @@
+<view class="store-page">
+  <view wx:if="{{loading}}" class="state-card">正在读取店铺信息…</view>
+  <view wx:elif="{{errorMessage}}" class="state-card"><text>{{errorMessage}}</text><button class="secondary" bindtap="onRetry">重新加载</button></view>
+  <block wx:elif="{{store}}">
+    <view class="hero-card">
+      <text class="eyebrow">{{store.source === 'TENCENT_POI' ? '腾讯位置服务地点' : '我的自建店铺'}}</text>
+      <text class="store-name">{{store.name}}</text>
+      <text class="category">{{store.category || '餐饮店铺'}}</text>
+    </view>
+    <view class="info-card">
+      <text class="label">地址</text><text class="value">{{store.address || '暂未填写地址'}}</text>
+      <text class="label">区域</text><text class="value">{{store.city || ''}} {{store.district || ''}}</text>
+      <text class="label">坐标</text><text class="value">{{store.latitude}}, {{store.longitude}}</text>
+    </view>
+    <button wx:if="{{store.foodRecord}}" class="primary" bindtap="onOpenRecord">查看我的记录</button>
+    <button wx:else class="primary" bindtap="onCheckIn">记录这家店</button>
+  </block>
+</view>

@@ -1,0 +1,109 @@
+page {
+  background: var(--ft-color-background);
+}
+
+.login-page {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 112rpx 36rpx 52rpx;
+}
+
+.brand-mark {
+  align-items: center;
+  background: var(--ft-color-primary-soft);
+  border: 2rpx solid var(--ft-color-border);
+  border-radius: 38rpx;
+  display: flex;
+  height: 132rpx;
+  justify-content: center;
+  position: relative;
+  width: 132rpx;
+}
+
+.brand-bowl {
+  align-items: center;
+  background: #ffffff;
+  border: 4rpx solid var(--ft-color-primary);
+  border-radius: 16rpx 16rpx 48rpx 48rpx;
+  color: var(--ft-color-primary);
+  display: flex;
+  font-size: 30rpx;
+  font-weight: 700;
+  height: 66rpx;
+  justify-content: center;
+  margin-top: 20rpx;
+  width: 82rpx;
+}
+
+.brand-steam {
+  border-left: 4rpx solid var(--ft-color-orange);
+  border-radius: 50%;
+  height: 32rpx;
+  position: absolute;
+  top: 12rpx;
+  width: 16rpx;
+}
+
+.brand-steam--left { left: 48rpx; }
+.brand-steam--right { right: 42rpx; transform: rotate(-10deg); }
+
+.login-title {
+  color: var(--ft-color-text);
+  font-size: 52rpx;
+  font-weight: 700;
+  letter-spacing: 5rpx;
+  margin-top: 30rpx;
+}
+
+.login-subtitle {
+  color: var(--ft-color-text-secondary);
+  font-size: 25rpx;
+  margin-top: 10rpx;
+}
+
+.login-card {
+  background: var(--ft-color-surface);
+  border: 2rpx solid var(--ft-color-border);
+  border-radius: var(--ft-radius-large);
+  box-shadow: var(--ft-shadow-card);
+  box-sizing: border-box;
+  margin-top: 68rpx;
+  padding: 38rpx 32rpx;
+  width: 100%;
+}
+
+.login-card__title {
+  color: var(--ft-color-text);
+  display: block;
+  font-size: 32rpx;
+  font-weight: 650;
+}
+
+.login-card__description {
+  color: var(--ft-color-text-secondary);
+  display: block;
+  font-size: 25rpx;
+  line-height: 1.65;
+  margin: 14rpx 0 28rpx;
+}
+
+.login-error {
+  background: #faf0ed;
+  border-radius: 16rpx;
+  color: #a14d40;
+  display: block;
+  font-size: 24rpx;
+  margin-bottom: 20rpx;
+  padding: 16rpx;
+}
+
+.privacy-hint {
+  color: var(--ft-color-text-secondary);
+  font-size: 21rpx;
+  line-height: 1.6;
+  margin-top: 30rpx;
+  text-align: center;
+}

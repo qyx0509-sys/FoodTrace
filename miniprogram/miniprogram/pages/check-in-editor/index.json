@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "记录一餐",
+  "usingComponents": {
+    "primary-button": "/components/primary-button/index"
+  }
+}
