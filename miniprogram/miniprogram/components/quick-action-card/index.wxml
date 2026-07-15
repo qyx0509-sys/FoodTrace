@@ -1,0 +1,8 @@
+<button class="quick-card quick-card-{{tone}}" hover-class="quick-card-pressed" bindtap="onTap">
+  <view class="quick-icon quick-icon-{{icon}}" aria-hidden="true">
+    <view wx:if="{{icon === 'add'}}" class="quick-add">+</view>
+  </view>
+  <view class="quick-title">{{title}}</view>
+  <view class="quick-description">{{description}}</view>
+  <view class="quick-arrow" aria-hidden="true"></view>
+</button>

@@ -1,0 +1,73 @@
+<view class="journal-page">
+  <view wx:if="{{status === 'loading' || status === 'generating'}}" class="journal-state journal-state--loading">
+    <view class="notebook-loader" aria-hidden="true">
+      <view class="notebook-loader__tape"></view>
+      <view class="notebook-loader__line"></view>
+      <view class="notebook-loader__line notebook-loader__line--short"></view>
+      <view class="notebook-loader__dot">✦</view>
+    </view>
+    <text class="journal-state__title">
+      {{status === 'loading' ? '正在整理今天的足迹' : '正在贴好照片和小标签'}}
+    </text>
+    <text class="journal-state__hint">很快就能看到你的专属手账啦～</text>
+  </view>
+
+  <empty-state
+    wx:elif="{{status === 'empty'}}"
+    action-label="去打卡"
+    description="今天还没有美食足迹，先去记录一家吧～"
+    title="今天的手账还空着"
+    bind:action="onGoCheckIn"
+  />
+
+  <view wx:elif="{{status === 'error'}}" class="journal-state journal-state--error">
+    <view class="journal-state__symbol" aria-hidden="true">↻</view>
+    <text class="journal-state__title">这张手账刚刚走神了</text>
+    <text class="journal-state__hint">{{errorMessage}}</text>
+    <primary-button label="重新试试" bind:action="onRetry" />
+    <button class="text-action" bindtap="onBackHome">返回首页</button>
+  </view>
+
+  <block wx:elif="{{status === 'ready'}}">
+    <view class="preview-heading">
+      <view>
+        <text class="preview-heading__eyebrow">TODAY'S FOOD NOTES</text>
+        <text class="preview-heading__title">你的今日美食手账</text>
+      </view>
+      <text class="preview-heading__stamp">{{journal.totalCount}} 家</text>
+    </view>
+
+    <view class="poster-frame">
+      <view class="poster-frame__tape" aria-hidden="true"></view>
+      <image
+        class="poster-frame__image"
+        src="{{posterPath}}"
+        mode="widthFix"
+        show-menu-by-longpress="true"
+        aria-label="今日美食手账生成结果"
+      />
+    </view>
+
+    <view class="journal-actions">
+      <primary-button
+        disabled="{{sharing}}"
+        label="{{sharing ? '正在打开分享…' : '分享图片'}}"
+        bind:action="onSharePoster"
+      />
+      <primary-button
+        variant="secondary"
+        disabled="{{saving}}"
+        label="{{saving ? '正在保存…' : '保存到相册'}}"
+        bind:action="onSavePoster"
+      />
+      <view class="journal-actions__minor">
+        <button class="text-action" bindtap="onRegenerate">重新生成</button>
+        <button class="text-action" bindtap="onBackHome">返回首页</button>
+      </view>
+    </view>
+
+    <text class="share-hint">若当前微信版本不支持直接分享，可先保存到相册再分享。</text>
+  </block>
+
+  <journal-poster wx:if="{{journal}}" id="journal-poster" />
+</view>

@@ -1,0 +1,104 @@
+.empty-state {
+  display: flex;
+  min-height: 350rpx;
+  padding: 42rpx 30rpx;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1rpx solid var(--ft-color-border);
+  border-radius: var(--ft-radius-large);
+  background: var(--ft-color-surface);
+  text-align: center;
+}
+
+.scrapbook-illustration {
+  position: relative;
+  width: 168rpx;
+  height: 138rpx;
+  transform: rotate(-2deg);
+}
+
+.empty-tape {
+  position: absolute;
+  top: 0;
+  left: 48rpx;
+  width: 78rpx;
+  height: 24rpx;
+  background: rgba(255, 197, 130, 0.58);
+  transform: rotate(5deg);
+}
+
+.empty-plate {
+  position: absolute;
+  top: 26rpx;
+  left: 24rpx;
+  display: flex;
+  width: 112rpx;
+  height: 96rpx;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid #edb29c;
+  border-radius: 50%;
+  background: #fff8f1;
+  box-shadow: 8rpx 9rpx 0 #f7e5dc;
+}
+
+.empty-plate-inner {
+  width: 58rpx;
+  height: 48rpx;
+  border: 3rpx dashed #f1cab9;
+  border-radius: 50%;
+}
+
+.empty-fork {
+  position: absolute;
+  right: 7rpx;
+  bottom: 10rpx;
+  color: #90ad87;
+  font-size: 54rpx;
+  font-weight: 700;
+  letter-spacing: -8rpx;
+  transform: rotate(8deg);
+}
+
+.empty-star {
+  position: absolute;
+  top: 24rpx;
+  right: 0;
+  color: var(--ft-color-primary);
+  font-size: 28rpx;
+}
+
+.empty-title {
+  color: var(--ft-color-text);
+  font-size: 29rpx;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.empty-description {
+  max-width: 490rpx;
+  margin-top: 10rpx;
+  color: var(--ft-color-text-secondary);
+  font-size: 23rpx;
+  line-height: 1.55;
+}
+
+.empty-action {
+  min-width: 200rpx;
+  min-height: 72rpx;
+  margin-top: 24rpx;
+  padding: 16rpx 28rpx;
+  border: 2rpx solid var(--ft-color-primary);
+  border-radius: var(--ft-radius-control);
+  background: var(--ft-color-primary-soft);
+  color: var(--ft-color-primary);
+  font-size: 25rpx;
+  font-weight: 600;
+  line-height: 1.35;
+  transition: transform 120ms ease;
+}
+
+.empty-action-pressed {
+  transform: scale(0.97);
+}

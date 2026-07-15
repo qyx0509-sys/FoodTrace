@@ -1,5 +1,101 @@
-<view class="page">
-  <view class="hero" role="heading" aria-level="1">{{title}}</view>
-  <view class="description">{{description}}</view>
-  <view class="stage">{{stage}}</view>
+<view class="home-page">
+  <view class="greeting-card ft-card-enter">
+    <view class="greeting-copy">
+      <view class="greeting-title" role="heading" aria-level="1">{{greetingTitle}}</view>
+      <view class="greeting-description">{{greetingDescription}}</view>
+    </view>
+    <view class="plate-doodle" aria-hidden="true">
+      <view class="doodle-steam doodle-steam-left"></view>
+      <view class="doodle-steam doodle-steam-right"></view>
+      <view class="doodle-plate"><view class="doodle-bite">食</view></view>
+      <view class="doodle-star">✦</view>
+    </view>
+  </view>
+
+  <view class="primary-action">
+    <ft-primary-button icon="＋" label="一键打卡" bind:action="onStartCheckIn" />
+  </view>
+
+  <view class="quick-grid ft-card-enter" aria-label="快捷操作">
+    <view class="quick-cell">
+      <ft-quick-action-card
+        title="搜索店铺"
+        description="从地图或关键词搜索"
+        icon="search"
+        tone="orange"
+        bind:action="onSearchStore"
+      />
+    </view>
+    <view class="quick-cell quick-cell-last">
+      <ft-quick-action-card
+        title="手动添加"
+        description="地图搜不到也能自己记"
+        icon="add"
+        tone="sage"
+        bind:action="onManualAdd"
+      />
+    </view>
+  </view>
+
+  <view class="ft-section-heading section-heading" role="heading" aria-level="2">我的清单</view>
+  <view class="status-grid ft-card-enter">
+    <view wx:for="{{listEntries}}" wx:key="status" class="status-cell">
+      <ft-status-summary-card
+        count="{{item.count}}"
+        label="{{item.label}}"
+        status="{{item.status}}"
+        symbol="{{item.symbol}}"
+        bind:action="onOpenList"
+      />
+    </view>
+  </view>
+
+  <button class="journal-entry ft-card-enter" hover-class="journal-entry-pressed" bindtap="onGenerateJournal">
+    <view class="journal-tape" aria-hidden="true"></view>
+    <view class="journal-icon" aria-hidden="true">
+      <view class="journal-page-line"></view>
+      <view class="journal-page-line journal-page-line-short"></view>
+      <view class="journal-heart">♥</view>
+    </view>
+    <view class="journal-copy">
+      <view class="journal-title">今日美食手账</view>
+      <view class="journal-description">一键把今天吃过的店，生成一张专属打卡图片</view>
+    </view>
+    <view class="journal-action">生成今日手账</view>
+  </button>
+
+  <view class="ft-section-heading section-heading recent-heading" role="heading" aria-level="2">最近记录</view>
+
+  <view wx:if="{{status === 'loading'}}" class="loading-card" aria-label="正在加载最近记录">
+    <view class="skeleton skeleton-photo"></view>
+    <view class="skeleton-copy">
+      <view class="skeleton skeleton-title"></view>
+      <view class="skeleton skeleton-line"></view>
+      <view class="skeleton skeleton-line skeleton-line-short"></view>
+    </view>
+  </view>
+
+  <ft-empty-state
+    wx:elif="{{status === 'error'}}"
+    title="加载遇到一点问题"
+    description="{{errorMessage}}"
+    action-label="重新加载"
+    variant="error"
+    bind:action="onRetry"
+  />
+
+  <ft-empty-state
+    wx:elif="{{status === 'empty'}}"
+    title="还没有美食足迹"
+    description="从今天的第一家店开始吧"
+    action-label="去打卡"
+    variant="plate"
+    bind:action="onStartCheckIn"
+  />
+
+  <view wx:else class="record-list">
+    <view wx:for="{{recentRecords}}" wx:key="id" class="record-item">
+      <ft-food-card record="{{item}}" bind:select="onOpenRecord" />
+    </view>
+  </view>
 </view>

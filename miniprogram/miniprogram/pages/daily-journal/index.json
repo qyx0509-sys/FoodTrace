@@ -1,0 +1,10 @@
+{
+  "navigationBarBackgroundColor": "#FFF9F3",
+  "navigationBarTextStyle": "black",
+  "navigationBarTitleText": "今日美食手账",
+  "usingComponents": {
+    "empty-state": "/components/empty-state/index",
+    "journal-poster": "/components/journal-poster/index",
+    "primary-button": "/components/primary-button/index"
+  }
+}

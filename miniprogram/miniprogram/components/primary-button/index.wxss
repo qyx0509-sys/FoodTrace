@@ -1,0 +1,57 @@
+.primary-button {
+  display: flex;
+  width: 100%;
+  min-height: 88rpx;
+  padding: 20rpx 30rpx;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid transparent;
+  border-radius: var(--ft-radius-control);
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 1.35;
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+.primary-button-primary {
+  background: var(--ft-color-primary);
+  box-shadow: var(--ft-shadow-primary);
+  color: #ffffff;
+}
+
+.primary-button-secondary {
+  border-color: var(--ft-color-border);
+  background: var(--ft-color-primary-soft);
+  color: var(--ft-color-primary);
+}
+
+.primary-button-ghost {
+  background: transparent;
+  color: var(--ft-color-text-secondary);
+}
+
+.primary-button-pressed {
+  transform: scale(0.97);
+}
+
+.button-icon {
+  margin-right: 12rpx;
+  font-size: 34rpx;
+  line-height: 1;
+}
+
+.button-spinner {
+  width: 28rpx;
+  height: 28rpx;
+  margin-right: 12rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-spin 700ms linear infinite;
+}
+
+@keyframes button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

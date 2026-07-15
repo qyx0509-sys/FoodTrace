@@ -1,12 +1,18 @@
 {
-  "pages": ["pages/home/index"],
+  "pages": ["pages/home/index", "pages/store-search/index", "pages/daily-journal/index"],
   "window": {
-    "backgroundColor": "#F7F7F5",
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#FFF8F3",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#FFF8F3",
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "食迹"
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于搜索你附近的餐厅和计算店铺距离"
+    }
+  },
+  "requiredPrivateInfos": ["getLocation"],
   "style": "v2",
   "sitemapLocation": "sitemap.json"
 }

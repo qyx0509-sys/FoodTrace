@@ -1,0 +1,10 @@
+<button
+  class="primary-button primary-button-{{variant}}"
+  hover-class="primary-button-pressed"
+  disabled="{{disabled || loading}}"
+  bindtap="onTap"
+>
+  <view wx:if="{{loading}}" class="button-spinner" aria-hidden="true"></view>
+  <text wx:elif="{{icon}}" class="button-icon" aria-hidden="true">{{icon}}</text>
+  <text>{{loading ? '生成中…' : label}}</text>
+</button>

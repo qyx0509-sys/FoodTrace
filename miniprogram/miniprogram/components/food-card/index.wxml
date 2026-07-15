@@ -1,0 +1,21 @@
+<button class="food-card" hover-class="food-card-pressed" bindtap="onTap">
+  <image wx:if="{{record.hasImage}}" class="food-photo" src="{{record.imagePath}}" mode="aspectFill" />
+  <view wx:else class="food-photo food-photo-placeholder" aria-hidden="true">
+    <view class="placeholder-plate"></view>
+    <view class="placeholder-spark">✦</view>
+  </view>
+  <view class="food-content">
+    <view class="food-header">
+      <view class="food-name">{{record.storeName}}</view>
+      <view wx:if="{{record.hasRating}}" class="rating-sticker">★ {{record.ratingLabel}}</view>
+    </view>
+    <view class="food-meta">
+      <text wx:if="{{record.regionLabel}}">{{record.regionLabel}} · </text>
+      <text>{{record.updatedLabel}}</text>
+    </view>
+    <view wx:if="{{record.tags.length > 0}}" class="tag-row">
+      <view wx:for="{{record.tags}}" wx:key="*this" class="tag-chip"># {{item}}</view>
+    </view>
+    <view wx:else class="status-chip status-chip-{{record.status}}">{{record.statusLabel}}</view>
+  </view>
+</button>

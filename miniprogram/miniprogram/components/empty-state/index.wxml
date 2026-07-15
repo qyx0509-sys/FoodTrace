@@ -1,0 +1,13 @@
+<view class="empty-state">
+  <view class="scrapbook-illustration scrapbook-illustration-{{variant}}" aria-hidden="true">
+    <view class="empty-tape"></view>
+    <view class="empty-plate"><view class="empty-plate-inner"></view></view>
+    <view class="empty-fork">⋮</view>
+    <view class="empty-star">✦</view>
+  </view>
+  <view class="empty-title">{{title}}</view>
+  <view class="empty-description">{{description}}</view>
+  <button wx:if="{{actionLabel}}" class="empty-action" hover-class="empty-action-pressed" bindtap="onAction">
+    {{actionLabel}}
+  </button>
+</view>

@@ -1,0 +1,5 @@
+<button class="status-card status-card-{{status}}" hover-class="status-card-pressed" bindtap="onTap">
+  <view class="status-symbol" aria-hidden="true">{{symbol}}</view>
+  <view class="status-count">{{count}}</view>
+  <view class="status-label">{{label}}</view>
+</button>

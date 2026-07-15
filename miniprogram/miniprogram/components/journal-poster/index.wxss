@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  width: 1px;
+}
+
+.journal-poster-canvas {
+  height: 1440px;
+  left: -2000px;
+  position: absolute;
+  top: -2000px;
+  width: 1080px;
+}

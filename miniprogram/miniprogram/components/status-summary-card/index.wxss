@@ -1,0 +1,68 @@
+.status-card {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  height: 154rpx;
+  padding: 18rpx 12rpx;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1rpx solid var(--ft-color-border);
+  border-radius: 24rpx;
+  background: var(--ft-color-surface);
+  color: var(--ft-color-text);
+  line-height: 1;
+  transition: transform 120ms ease;
+}
+
+.status-card-WANT_TO_GO {
+  background: #fff8ef;
+}
+
+.status-card-VISITED {
+  background: #f4f9f1;
+}
+
+.status-card-BLACKLISTED {
+  background: #faf4f2;
+}
+
+.status-card-pressed {
+  transform: scale(0.97);
+}
+
+.status-symbol {
+  display: flex;
+  width: 38rpx;
+  height: 38rpx;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14rpx;
+  background: var(--ft-color-orange-soft);
+  color: #dc773a;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.status-card-VISITED .status-symbol {
+  background: #e5f0e1;
+  color: #64845b;
+}
+
+.status-card-BLACKLISTED .status-symbol {
+  background: var(--ft-color-danger-soft);
+  color: #9a655c;
+}
+
+.status-count {
+  margin-top: 10rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.status-label {
+  margin-top: 8rpx;
+  color: var(--ft-color-text-secondary);
+  font-size: 21rpx;
+  font-weight: 500;
+}

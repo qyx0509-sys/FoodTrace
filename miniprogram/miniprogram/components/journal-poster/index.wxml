@@ -1,0 +1,6 @@
+<canvas
+  id="journal-poster-canvas"
+  type="2d"
+  class="journal-poster-canvas"
+  aria-label="今日美食手账绘制画布"
+></canvas>

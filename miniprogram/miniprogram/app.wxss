@@ -1,10 +1,86 @@
 page {
+  --ft-color-primary: #f05a47;
+  --ft-color-primary-pressed: #dc4938;
+  --ft-color-primary-soft: #fff0e8;
+  --ft-color-background: #fff9f3;
+  --ft-color-orange: #ff9a62;
+  --ft-color-orange-soft: #fff2df;
+  --ft-color-sage: #a8c69f;
+  --ft-color-sage-soft: #eef6eb;
+  --ft-color-danger-soft: #f6e9e6;
+  --ft-color-text: #3a302c;
+  --ft-color-text-secondary: #8d7f78;
+  --ft-color-border: #f0ddd3;
+  --ft-color-surface: #ffffff;
+  --ft-radius-small: 16rpx;
+  --ft-radius-control: 22rpx;
+  --ft-radius-card: 28rpx;
+  --ft-radius-large: 32rpx;
+  --ft-shadow-card: 0 12rpx 32rpx rgba(102, 66, 48, 0.08);
+  --ft-shadow-primary: 0 12rpx 24rpx rgba(220, 73, 56, 0.22);
   min-height: 100%;
-  background: #f7f7f5;
-  color: #242420;
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  background: var(--ft-color-background);
+  color: var(--ft-color-text);
+  font-family: 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', sans-serif;
+  font-size: 28rpx;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+view,
+text,
+button,
+input,
+image,
+canvas {
+  box-sizing: border-box;
+}
+
+button {
+  margin: 0;
+  font-family: inherit;
 }
 
 button::after {
   border: 0;
+}
+
+button[disabled] {
+  opacity: 0.5;
+}
+
+.ft-section-heading {
+  display: flex;
+  align-items: center;
+  color: var(--ft-color-text);
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  line-height: 1.4;
+}
+
+.ft-section-heading::before {
+  width: 8rpx;
+  height: 28rpx;
+  margin-right: 14rpx;
+  border-radius: 8rpx;
+  background: var(--ft-color-primary);
+  content: '';
+}
+
+.ft-card-enter {
+  animation: ft-card-enter 260ms ease-out both;
+}
+
+@keyframes ft-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10rpx);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

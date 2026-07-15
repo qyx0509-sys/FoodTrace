@@ -1,3 +1,13 @@
 {
-  "navigationBarTitleText": "食迹"
+  "backgroundColor": "#FFF9F3",
+  "enablePullDownRefresh": true,
+  "navigationBarBackgroundColor": "#FFF9F3",
+  "navigationBarTitleText": "食迹",
+  "usingComponents": {
+    "ft-empty-state": "/components/empty-state/index",
+    "ft-food-card": "/components/food-card/index",
+    "ft-primary-button": "/components/primary-button/index",
+    "ft-quick-action-card": "/components/quick-action-card/index",
+    "ft-status-summary-card": "/components/status-summary-card/index"
+  }
 }

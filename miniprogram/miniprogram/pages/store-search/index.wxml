@@ -1,0 +1,150 @@
+<view class="search-page">
+  <view class="search-shell">
+    <view class="search-control">
+      <view class="search-glyph" aria-hidden="true"></view>
+      <input
+        class="search-input"
+        value="{{query}}"
+        maxlength="50"
+        confirm-type="search"
+        placeholder="搜索店名、菜系或商圈"
+        placeholder-class="search-placeholder"
+        aria-label="搜索店名、菜系或商圈"
+        bindinput="onInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <button wx:if="{{query.length > 0}}" class="clear-button" aria-label="清空搜索" bindtap="onClear">×</button>
+    </view>
+    <button
+      class="search-button"
+      hover-class="search-button-active"
+      disabled="{{status === 'loading'}}"
+      bindtap="onSearchConfirm"
+    >搜索</button>
+  </view>
+  <view wx:if="{{validationMessage}}" class="validation-message" role="alert">{{validationMessage}}</view>
+
+  <view class="scope-card">
+    <view class="scope-header">
+      <view class="scope-title">搜索范围</view>
+      <button class="map-pick-button" bindtap="onMapPick">在地图中选择</button>
+    </view>
+
+    <button
+      class="scope-option {{scopeMode === 'location' ? 'scope-option-active' : ''}}"
+      disabled="{{locationStatus === 'loading'}}"
+      bindtap="onUseLocation"
+    >
+      <view class="scope-pin" aria-hidden="true"></view>
+      <view class="scope-option-content">
+        <view class="scope-option-title">使用当前位置</view>
+        <view class="scope-option-description">{{locationMessage}}</view>
+      </view>
+      <view wx:if="{{scopeMode === 'location' && locationStatus === 'ready'}}" class="scope-check">✓</view>
+    </button>
+
+    <view class="scope-divider"></view>
+
+    <view class="city-option {{scopeMode === 'city' ? 'city-option-active' : ''}}">
+      <view class="city-icon" aria-hidden="true">城</view>
+      <view class="city-content">
+        <view class="scope-option-title">按城市搜索</view>
+        <input
+          class="city-input"
+          value="{{city}}"
+          maxlength="20"
+          placeholder="例如：上海市"
+          placeholder-class="city-placeholder"
+          aria-label="搜索城市"
+          bindinput="onCityInput"
+        />
+      </view>
+    </view>
+
+    <view wx:if="{{locationStatus === 'denied'}}" class="permission-hint">
+      <view class="permission-hint-copy">位置权限未开启，不影响按城市搜索</view>
+      <button class="permission-link" bindtap="onOpenSettings">去开启</button>
+    </view>
+    <view wx:elif="{{locationStatus === 'error'}}" class="permission-hint">
+      <view class="permission-hint-copy">定位失败，不影响按城市搜索</view>
+      <button class="permission-link" bindtap="onRetryLocation">重试定位</button>
+    </view>
+  </view>
+
+  <view class="result-area">
+    <view wx:if="{{status === 'idle'}}" class="state-panel">
+      <view class="search-illustration" aria-hidden="true">
+        <view class="illustration-circle"></view>
+        <view class="illustration-handle"></view>
+        <view class="illustration-bowl">食</view>
+      </view>
+      <view class="state-title">搜一家想去的店</view>
+      <view wx:if="{{scopeMode === 'location'}}" class="state-description">输入至少 2 个字，我们会优先查找附近店铺</view>
+      <view wx:else class="state-description">输入城市和至少 2 个字的店铺关键词即可搜索</view>
+      <view wx:if="{{recentKeywords.length > 0}}" class="recent-searches">
+        <view class="recent-title">最近搜索</view>
+        <view class="recent-keywords">
+          <button
+            wx:for="{{recentKeywords}}"
+            wx:key="*this"
+            class="recent-keyword"
+            data-keyword="{{item}}"
+            bindtap="onRecentKeyword"
+          >{{item}}</button>
+        </view>
+      </view>
+    </view>
+
+    <view wx:elif="{{status === 'loading'}}" class="loading-list" aria-label="正在搜索店铺">
+      <view wx:for="{{loadingRows}}" wx:key="*this" class="loading-row">
+        <view class="skeleton skeleton-name"></view>
+        <view class="skeleton skeleton-address"></view>
+        <view class="skeleton skeleton-meta"></view>
+      </view>
+    </view>
+
+    <view wx:elif="{{status === 'error'}}" class="state-panel">
+      <view class="state-icon state-icon-error" aria-hidden="true">!</view>
+      <view class="state-title">没有搜成功</view>
+      <view class="state-description">{{errorMessage}}</view>
+      <button class="outline-button" hover-class="outline-button-active" bindtap="onRetrySearch">重新搜索</button>
+    </view>
+
+    <view wx:elif="{{status === 'empty'}}" class="state-panel">
+      <view class="state-icon state-icon-empty" aria-hidden="true">∅</view>
+      <view class="state-title">没有找到相关店铺</view>
+      <view class="state-description">换个店名或商圈试试，也可以手动添加</view>
+      <button class="outline-button" hover-class="outline-button-active" bindtap="onManualAdd">手动添加</button>
+    </view>
+
+    <view wx:else class="results-list">
+      <button
+        wx:for="{{results}}"
+        wx:key="mapPoiId"
+        class="result-card"
+        data-existing="{{item.hasExistingRecord}}"
+        hover-class="result-card-active"
+        bindtap="onSelectPoi"
+      >
+        <view class="result-header">
+          <view class="result-name">{{item.name}}</view>
+          <view wx:if="{{item.distanceLabel}}" class="distance-label">{{item.distanceLabel}}</view>
+        </view>
+        <view class="result-address">{{item.address}}</view>
+        <view class="result-footer">
+          <view class="category-label">{{item.categoryLabel}}</view>
+          <view wx:if="{{item.hasExistingRecord}}" class="existing-label">{{item.existingRecordLabel}}</view>
+          <view wx:else class="select-label">选择店铺</view>
+        </view>
+      </button>
+    </view>
+  </view>
+
+  <button class="manual-entry" hover-class="manual-entry-active" bindtap="onManualAdd">
+    <view>
+      <view class="manual-title">地图里找不到？</view>
+      <view class="manual-description">手动填写店名和地址</view>
+    </view>
+    <view class="manual-action">手动添加</view>
+  </button>
+</view>
